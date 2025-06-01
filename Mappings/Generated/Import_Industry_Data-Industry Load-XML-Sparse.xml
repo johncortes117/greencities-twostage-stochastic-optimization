@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<AimmsXMLMapping>
+	<ElementObjectMapping name="Industry Load">
+		<ElementObjectMapping name="Row">
+			<AttributeMapping name="Location" binds-to="k" />
+			<AttributeMapping name="Quarter" binds-to="t" />
+			<AttributeMapping name="Instance" binds-to="i" />
+			<ElementValueMapping name="G_Load" maps-to="D_District_HG(k,t,i)" />
+			<ElementValueMapping name="E_Load" maps-to="D_District(k,t,i)" />
+		</ElementObjectMapping>
+	</ElementObjectMapping>
+</AimmsXMLMapping>

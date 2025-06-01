@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<AimmsJSONMapping>
+	<ObjectMapping>
+		<ArrayMapping name="rows">
+			<ObjectMapping>
+				<ValueMapping name="Location" binds-to="k" />
+				<ValueMapping name="Quarter" binds-to="t" />
+				<ValueMapping name="Instance" binds-to="i" />
+				<ValueMapping name="G_Load" maps-to="D_District_HG(k,t,i)" />
+				<ValueMapping name="E_Load" maps-to="D_District(k,t,i)" />
+			</ObjectMapping>
+		</ArrayMapping>
+	</ObjectMapping>
+</AimmsJSONMapping>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<AimmsXMLMapping>
+	<ElementObjectMapping name="City Load">
+		<ElementObjectMapping name="Row">
+			<AttributeMapping name="Location_Electricity" binds-to="j" />
+			<AttributeMapping name="Quarter" binds-to="t" />
+			<AttributeMapping name="Instance" binds-to="i" />
+			<ElementValueMapping name="Load" maps-to="D_City(j,t,i)" />
+		</ElementObjectMapping>
+	</ElementObjectMapping>
+</AimmsXMLMapping>

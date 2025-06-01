@@ -1,0 +1,1742 @@
+## ams_version=1.0
+
+Model Main_MOPTA {
+	Section UI {
+		DeclarationSection Workflow_Declaration {
+			Parameter Workflow_Proto {
+				Definition: 1;
+			}
+			Parameter Workflow_HnN {
+				Definition: 2;
+			}
+			Parameter Workflow_WnS {
+				Definition: 3;
+			}
+			StringParameter Workflow_MainPages {
+				IndexDomain: (webui::indexWorkflowOrder,webui::indexNoOfPages,webui::indexWorkflowPageSpec);
+				Definition: {
+					{
+					  ( '1', Workflow_Proto, 'displayText'       ) : "Prototype",
+					  ( '1', Workflow_Proto, 'icon'              ) : "aimms-cog",
+					  ( '1', Workflow_Proto, 'pageId'            ) : FormatString("%e", ProtoPage),
+					  ( '1', Workflow_Proto, 'tooltip'           ) : "",
+					  ( '1', Workflow_Proto, 'workflowPageState' ) : "Active",
+					  ( '1', Workflow_Proto, 'pageDataState'     ) : "",
+					  ( '1', Workflow_Proto, 'redirectPageId'    ) : "",
+					
+					  ( '1', Workflow_HnN, 'displayText'       ) : "HnN",
+					  ( '1', Workflow_HnN, 'icon'              ) : "aimms-cog",
+					  ( '1', Workflow_HnN, 'pageId'            ) : FormatString("%e", HnNPage),
+					  ( '1', Workflow_HnN, 'tooltip'           ) : "",
+					  ( '1', Workflow_HnN, 'workflowPageState' ) : "Active",
+					  ( '1', Workflow_HnN, 'pageDataState'     ) : "",
+					  ( '1', Workflow_HnN, 'redirectPageId'    ) : "",
+					
+					  ( '1', Workflow_WnS, 'displayText'       ) : "WnS",
+					  ( '1', Workflow_WnS, 'icon'              ) : "aimms-cog",
+					  ( '1', Workflow_WnS, 'pageId'            ) : FormatString("%e", WnSPage),
+					  ( '1', Workflow_WnS, 'tooltip'           ) : "",
+					  ( '1', Workflow_WnS, 'workflowPageState' ) : "Active",
+					  ( '1', Workflow_WnS, 'pageDataState'     ) : "",
+					  ( '1', Workflow_WnS, 'redirectPageId'    ) : ""
+					}
+				}
+			}
+			StringParameter Workflow_Main {
+				IndexDomain: (webui::indexWorkflowOrder,webui::indexWorkflowSpec);
+				Definition: {
+					data { ( 1, title ) : "Navigation" };
+				}
+			}
+			StringParameter Workflow_MainSteps {
+				IndexDomain: (webui::indexWorkflowOrder,webui::indexNoOfPages,webui::indexWorkflowPageSpec);
+				Definition: Workflow_MainPages(webui::indexWorkflowOrder, webui::indexNoOfPages, webui::indexWorkflowPageSpec);
+			}
+			ElementParameter ProtoPage {
+				Range: webui::AllPageIds;
+				Definition: {
+					'prototipe_analysis' ;
+				}
+			}
+			ElementParameter HnNPage {
+				Range: webui::AllPageIds;
+				Definition: {
+					'hnh_analysis' ;
+				}
+			}
+			ElementParameter WnSPage {
+				Range: webui::AllPageIds;
+				Definition: {
+					'wns' ;
+				}
+			}
+		}
+		DeclarationSection Page_Action_Declaration {
+			StringParameter PageAction_Secondary {
+				IndexDomain: (webui::indexPageExtension,webui::indexPageActionSpec);
+				Definition: {
+					{   ( '1', 'displaytext' ) : "Load Data",
+					    ( '1', 'icon' )        : "aimms-database",
+					    ( '1', 'procedure' )   : "Read_Data",
+					    ( '1', 'state' )       : "active"
+					}
+				}
+			}
+		}
+	}
+	Section Data_Processing {
+		Procedure Read_Data {
+			Body: {
+				dex::GenerateDatasetMappings;
+				dex::ReadAllMappings;
+				
+				! Read load data
+				dex::ReadFromFile("data.xlsx", "Generated/Import_Industry_Data-Excel");
+				dex::ReadFromFile("data.xlsx", "Generated/Import_City_Data-Excel");
+				
+				Quarter_Selection(t | ord(t) = 1) := 1;
+			}
+		}
+		DeclarationSection Identifier_Element_Text {
+			StringParameter IdentifierElementText {
+				IndexDomain: IndexIdentifiers;
+				Comment: "The ID Element Text is read in the PostMainInitialization procedure.";
+			}
+			File IdentifierElementTextFile {
+				Name: "MainProject/WebUI/resources/IdentifierElementText.txt";
+				Device: Disk;
+				Encoding: 'UTF8';
+				Mode: replace;
+			}
+		}
+		DeclarationSection Control_Panel_Section {
+			Parameter Quarter_Selection {
+				IndexDomain: t;
+				Range: binary;
+				Default: 0;
+			}
+			Set Quarter_Filter {
+				SubsetOf: Quarters;
+				Index: t_filter;
+				Definition: {
+					{t | Quarter_Selection(t)}
+				}
+			}
+		}
+	}
+	Section Optimization_Model_Command_Center {
+		Section Reports {
+			Section Hydrogen_Gas {
+				Section DemandHG {
+					DeclarationSection DistrictHG {
+						Parameter D_District_HG {
+							IndexDomain: (k,t,i);
+							Text: "Demand of Hydrogen Gas of district (k) in Quarter (t) in instance (i) in MW/instance";
+							dex::ColumnName: G_Load;
+							dex::Dataset: Import_Industry_Data;
+							dex::TableName: Industry Load;
+						}
+						Parameter D_District_HG_Total {
+							Definition: sum[(k,t,i),D_District_HG(k,t,i)];
+						}
+					}
+				}
+				Section SupplyHG {
+					DeclarationSection TotalRealSupplyHG {
+						Parameter Real_HG_Offer_District {
+							Definition: sum[(a,k,t,i),theta_AHGS_District(a,k,t,i)];
+							Comment: {
+								"sum[(a,k,t,i),theta_AHGS_District(a,k,t,i)]
+								+sum[(a,k,t,i),theta_AHGS_District_plus(a,k,t,i)]
+								+sum[(a,k,t,i),theta_AHGS_District_minus(a,k,t,i)]"
+							}
+						}
+					}
+				}
+				Section HG_Produced {
+					DeclarationSection TotalHGProduced {
+						Parameter Total_HG_Produced {
+							Definition: sum[(o,t,i),gamma_IEE_Gas(o,t,i)];
+						}
+						Parameter CantidadHGenviadaFuelCell {
+							Definition: sum[(o,n,t,i),gamma_AHG_FuellCell(o,n,t,i)];
+						}
+						Parameter CantidadHGenviadaStorage {
+							Definition: sum[(o,a,t,i),gamma_AHG_Storage(o,a,t,i)];
+						}
+					}
+				}
+				Section HG_Stored {
+					DeclarationSection HGStored {
+						Parameter Total_HG_Stored {
+							Definition: sum[(a,k,t,i),theta_AHGS_District(a,k,t,i)];
+						}
+					}
+				}
+			}
+			Section Electricity {
+				Section Demand {
+					DeclarationSection City {
+						Parameter D_City {
+							IndexDomain: (j,t,i);
+							Text: "Demand of Energy of city (j) in Quarter (t) in instance (i) in MW/instance";
+							dex::ColumnName: Load;
+							dex::Dataset: Import_City_Data;
+							dex::TableName: City Load;
+						}
+						Parameter D_City_Total {
+							Definition: sum[(j,t,i),D_City(j,t,i)];
+						}
+					}
+					DeclarationSection District {
+						Parameter D_District {
+							IndexDomain: (k,t,i);
+							Text: "Demand of Energy of district (j) in Quarter (t) in instance (i) in Kw/instance";
+							dex::ColumnName: E_Load;
+							dex::Dataset: Import_Industry_Data;
+							dex::TableName: Industry Load;
+						}
+						Parameter D_District_Total {
+							Definition: sum[(k,t,i),D_District(k,t,i)];
+						}
+					}
+					DeclarationSection TotalDemand {
+						Parameter D_Total_City_District {
+							Definition: sum[(j,t,i),D_City(j,t,i)]+sum[(k,t,i),D_District(k,t,i)];
+						}
+					}
+				}
+				Section Supply {
+					DeclarationSection MaxSupply {
+						Parameter Max_Supply_City_District {
+							Definition: {
+								sum[(l),Gran_Total_Solar_Generation(l)]
+								+sum[(m),Gran_Total_Eolical_Generation(m)]
+							}
+						}
+					}
+					DeclarationSection TotalRealSupplyFuelCell {
+						Parameter Supply_FuelCell_City_District {
+							Definition: sum[(n,t,i),delta_AEFC(n,t,i)];
+						}
+						Parameter completar {
+							Definition: {
+								sum[(n,j,t,i),delta_AEFC_City_plus(n,j,t,i)]
+								+sum[(n,k,t,i),delta_AEFC_District_plus(n,k,t,i)]
+							}
+						}
+					}
+					DeclarationSection CitySupply {
+						Parameter Supply_City {
+							Definition: sum[(l,j,t,i),psi_ASE_City(l,j,t,i)] + sum[(m,j,t,i),lambda_AEE_City(m,j,t,i)] + sum[(n,j,t,i),delta_AEFC_City(n,j,t,i)];
+						}
+					}
+					DeclarationSection DistrictSupply {
+						Parameter Supply_District {
+							Definition: sum[(l,k,t,i),psi_ASE_District(l,k,t,i)] + sum[(m,k,t,i),lambda_AEE_District(m,k,t,i)] + sum[(n,k,t,i),delta_AEFC_District(n,k,t,i)];
+						}
+					}
+					DeclarationSection TotalRealSupplySolarEolical {
+						Parameter Total_Supply {
+							Definition: {
+								sum[(l,t,i),psi_ASE(l,t,i)]
+								+sum[(m,t,i),lambda_AEE(m,t,i)]
+								+sum[(n,t,i),delta_AEFC(n,t,i)]
+							}
+						}
+						Parameter Total_Supply_Solar_Eolical {
+							Definition: {
+								sum[(l,t,i),psi_ASE(l,t,i)]
+								+sum[(m,t,i),lambda_AEE(m,t,i)]
+							}
+						}
+					}
+				}
+				Section Excess {
+					DeclarationSection ExcessElectricty {
+						Parameter ExcessEnergy {
+							Definition: sum[(o,t,i),gamma_IEE_Electricity(o,t,i)];
+						}
+					}
+					DeclarationSection Electricity_Produced_CellFuell {
+						Parameter FuelCells_E_Produced {
+							Definition: sum[(o,n,t,i),delta_HG_to_E(o,n,t,i)];
+							Comment: "0.0000293";
+						}
+					}
+				}
+				Section Fractions_Produced {
+					DeclarationSection Fractions {
+						Parameter Fraction_Produced_City_Solar {
+							IndexDomain: (j);
+							Definition: sum[(l,t,i),fr_Solar_City(l,j,t,i)]/card(instances);
+						}
+						Parameter Fraction_Produced_City_Eolical {
+							IndexDomain: (j);
+							Definition: sum[(m,t,i),fr_Eolical_City(m,j,t,i)]/card(instances);
+						}
+						Parameter Fraction_Produced_City_FuelCell {
+							IndexDomain: (j);
+							Definition: sum[(n,t,i),fr_FuelCell_City(n,j,t,i)]/card(instances);
+						}
+						Parameter Fraction_Produced_District_Solar {
+							IndexDomain: (k);
+							Definition: sum[(l,t,i),fr_Solar_District(l,k,t,i)]/card(instances);
+						}
+						Parameter Fraction_Produced_District_Eolical {
+							IndexDomain: (k);
+							Definition: sum[(m,t,i),fr_Eolical_District(m,k,t,i)]/card(instances);
+						}
+						Parameter Fraction_Produced_District_FuelCell {
+							IndexDomain: (k);
+							Definition: sum[(n,t,i),fr_FuelCell_District(n,k,t,i)]/card(instances);
+						}
+					}
+				}
+			}
+		}
+		Section Procedures_Command_Center {
+			Procedure ClearSolution {
+				Body: {
+					Empty AllVariables;
+				}
+			}
+		}
+		Section Objective_Command_Center {
+			DeclarationSection Objective_Section {
+				Variable comc_cp_solution {
+					Range: free;
+					Definition: {
+						!Solar Structure "Here and Now"
+						 sum[(l,j,t,i),C_PSE_City(l,j,t,i)*psi_ASE_City(l,j,t,i)] + sum[(l,k,t,i),C_PSE_District(l,k,t,i)*psi_ASE_District(l,k,t,i)]
+						+sum[(l,j),cost_Solar_service(l)*Y_SSN_city(l,j)]+sum[(l,k),cost_Solar_service(l)*Y_SSN_district(l,k)]
+						
+						!Solar Structure "Wait and See"
+						+sum[(l,j,t,i,g,v),Penalty_SE_City_plus*psi_SEP_City_plus(l,j,t,i,g,v)]
+						+sum[(l,j,t,i,g,v),Penalty_SE_City_minus*psi_SEP_City_minus(l,j,t,i,g,v)]
+						+sum[(l,k,t,i,g,v),Penalty_SE_District_plus*psi_SEP_District_plus(l,k,t,i,g,v)]
+						+sum[(l,k,t,i,g,v),Penalty_SE_District_minus*psi_SEP_District_minus(l,k,t,i,g,v)]
+						
+						!Eolical Structure "Here and Now"
+						+ sum[(m,j,t,i),C_PEE_City(m,j,t,i)*lambda_AEE_City(m,j,t,i)] + sum[(m,k,t,i),C_PEE_District(m,k,t,i)*lambda_AEE_District(m,k,t,i)]
+						+sum[(m,j),cost_Eolical_service(m)*Y_Eolical_city(m,j)]+sum[(m,k),cost_Eolical_service(m)*Y_Eolical_district(m,k)]
+						
+						!Eolical Structure "Wait and See"
+						+sum[(m,j,t,i,f,h),Penalty_EE_City_plus*lambda_EEP_City_plus(m,j,t,i,f,h)]
+						+sum[(m,j,t,i,f,h),Penalty_EE_City_minus*lambda_EEP_City_minus(m,j,t,i,f,h)]
+						+sum[(m,k,t,i,f,h),Penalty_EE_District_plus*lambda_EEP_District_plus(m,k,t,i,f,h)]
+						+sum[(m,k,t,i,f,h),Penalty_EE_District_minus*lambda_EEP_District_minus(m,k,t,i,f,h)]
+						
+						!Fuel Cells Structure "Here and Now"
+						
+						+sum[(n,j,t,i),C_PEFC_City(n,j,t,i)*delta_AEFC_City(n,j,t,i)]+sum[(n,k,t,i),C_PEFC_District(n,k,t,i)*delta_AEFC_District(n,k,t,i)]
+						+sum[(n,j),cost_FuelCell_service(n)*(Y_FuelCell_City(n,j))]+sum[(n,k),Y_FuelCell_District(n,k)]
+						
+						!Fuel Cells Structure "Wait and See"
+						
+						+sum[(n,j,t,i),penalty_delta_AEFC_City_plus*delta_AEFC_City_plus(n,j,t,i)]
+						+sum[(n,j,t,i),penalty_delta_AEFC_City_minus*delta_AEFC_City_minus(n,j,t,i)]
+						+sum[(n,k,t,i),penalty_delta_AEFC_District_plus*delta_AEFC_District_plus(n,k,t,i)]
+						+sum[(n,k,t,i),penalty_delta_AEFC_District_minus*delta_AEFC_District_minus(n,k,t,i)]
+						
+						!Fraction Demand Penalties
+						+sum[(j,t,i),Penalty_fr_General_City_plus*fr_General_City_plus(j,t,i)]
+						+sum[(j,t,i),Penalty_fr_General_City_minus*fr_General_City_minus(j,t,i)]
+						+sum[(k,t,i),Penlaty_fr_General_District_plus*fr_General_District_plus(k,t,i)]
+						+sum[(k,t,i),Penlaty_fr_General_District_minus*fr_General_District_minus(k,t,i)]
+						
+						!Excess Penalties
+						+sum[(o,t,i),cost_Electrolizers_service(o)*gamma_IEE_Electricity(o,t,i)]
+						+sum[(o,t,i),Penalty_gamma_IEE_Energy_plus*gamma_IEE_Energy_plus(o,t,i)]
+						+sum[(o,t,i),Penalty_gamma_IEE_Energy_minus*gamma_IEE_Energy_minus(o,t,i)]
+						
+						
+						!Storage Structure "Here and Now"
+						
+						+sum[(a,k,t,i),C_CSLHGS_District(a,k,t,i)*theta_AHGS_District(a,k,t,i)]
+						+sum[(a,k),cost_Storage_service(a)*Y_Storage_District(a,k)]
+						
+						!Storage Cells Structure "Wait and See"
+						+sum[(a,k,t,i),Penalty_theta_AHGS_District_plus*theta_AHGS_District_plus(a,k,t,i)]
+						+sum[(a,k,t,i),Penalty_theta_AHGS_District_minus*theta_AHGS_District_minus(a,k,t,i)]
+						!Caso Otro
+						+sum[(o,n,t,i),C_HG_FuelCell(o,n,t,i)*gamma_AHG_FuellCell(o,n,t,i)]
+						+sum[(o,n,t,i,s),Penalty_HG_FuelCell_plus*gamma_HGP_FuelCell_plus(o,n,t,i,s)]
+						+sum[(o,n,t,i,s),Penalty_HG_FuelCell_minus*gamma_HGP_FuelCell_minus(o,n,t,i,s)]
+						
+						+sum [(o,a,t,i),C_HG_Storage(o,a,t,i)*gamma_AHG_Storage(o,a,t,i)]
+						+sum[(o,a,t,i,s),Penalty_HG_Storage_plus*gamma_HGP_Storage_plus(o,a,t,i,s)]
+						+sum[(o,a,t,i,s),Penalty_HG_Storage_minus*gamma_HGP_Storage_minus(o,a,t,i,s)]
+					}
+				}
+				MathematicalProgram MathProgram {
+					Objective: comc_cp_solution;
+					Direction: minimize;
+					Constraints: AllConstraints;
+					Variables: AllVariables;
+					Type: Automatic;
+				}
+			}
+			Procedure Optimize {
+				Body: {
+					solve MathProgram;
+					ModelSolved := 1;
+				}
+			}
+		}
+		Section General_Conversions {
+			DeclarationSection Converts {
+				Parameter YearsToInstances {
+					Definition: (1/34560);
+				}
+				Parameter Power_Units_factor {
+					IndexDomain: pu in Power_Units;
+					Definition: {
+						data 
+						{ 'Kw to Mw'            :   1.000e-03,  'Mw to Kw'            :   1.000e+03,  'Kw to Gw'            :   1.000e-06,
+						  'Gw to Kw'            :   1.000e+06,  'Mw to Gw'            :   1.000e-03,  'Gw to Mw'            :   1.000e+03,
+						  'Dfault: Mw/instance' :   1.000e+00 }
+					}
+				}
+				Parameter IFC {
+					Text: "Instance Factor Conversion";
+					Definition: 0.25;
+					Comment: {
+						"IFC: represent an hour fraction from Kw/h; example:. 3 Kw/h = 0.25*3 Kw/ instance  if 1 instance = 1/4 hour  (15 minutes)"
+					}
+				}
+				Parameter GCKWI {
+					Text: "General Cost for Kw/instances in USD";
+					Definition: 0.00017*Power_Units_factor('Dfault: Mw/instance')*IFC;
+					Comment: "0.17 is in Kw/h";
+				}
+			}
+		}
+		Section Solar_Command_Center {
+			DeclarationSection Solar {
+				Variable Y_SSN_city {
+					IndexDomain: (l,j);
+					Range: binary;
+				}
+				Variable Y_SSN_district {
+					IndexDomain: (l,k);
+					Range: binary;
+				}
+				Variable psi_ASE {
+					IndexDomain: (l,t,i);
+					Text: "Total Solar Energy Supply, of the node (l) in the period (t) in instance (i)";
+					Range: nonnegative;
+					Definition: sum[(j,k),(psi_ASE_City(l,j,t,i)+ psi_ASE_District(l,k,t,i))];
+				}
+				Variable psi_ASE_City {
+					IndexDomain: (l,j,t,i);
+					Text: "Amount of Solar Energy produced by node (l) using solar size panels (b)for city j in period (t) in instance (i)";
+					Range: nonnegative;
+					Definition: fr_Solar_City(l,j,t,i)*D_City(j,t,i);
+					Comment: {
+						"psi_ASE_City_fraction(l,j,t,i)*D_City(j,t,i);"
+					}
+				}
+				Variable psi_SEP_City_plus {
+					IndexDomain: (l,j,t,i,g,v);
+					Text: "Deficit of Solar Energy Production, of node (l) for the city (j) in period (t) under scenario (g,v)";
+					Range: nonnegative;
+				}
+				Variable psi_SEP_City_minus {
+					IndexDomain: (l,j,t,i,g,v);
+					Text: "Excess of Solar Energy Production, of node (l) for the city (j) in period (t) under scenario (g,v)";
+					Range: nonnegative;
+				}
+				Variable psi_ASE_District {
+					IndexDomain: (l,k,t,i);
+					Text: "Amount of Solar Energy produced by node (l) for the industrial district (k) in period (t)";
+					Range: nonnegative;
+					Definition: fr_Solar_District(l,k,t,i)*D_District(k,t,i);
+					Comment: "D_District(k,t,i)*psi_ASE_District_fraction(l,k,t,i)";
+				}
+				Variable psi_SEP_District_plus {
+					IndexDomain: (l,k,t,i,g,v);
+					Text: "Deficit of Solar Energy Production, of node (l) for the industrial district (k) in period (t) under scenario (g,v,b)";
+					Range: nonnegative;
+				}
+				Variable psi_SEP_District_minus {
+					IndexDomain: (l,k,t,i,g,v);
+					Text: "Excess of Solar Energy Production, of node (l) for the industrial district (k) in period (t) under scenario (g,v,b)";
+					Range: nonnegative;
+				}
+				Parameter SolarPanelUsefulLife {
+					IndexDomain: (b);
+					Text: "Useful life in Years";
+					Definition: data { 'large panel size' : 10,  'medium panel size' : 8,  'small panel size' : 5 };
+					Comment: "1 year= 96 instances x 360 = 34560 instances";
+				}
+				Parameter UnitarySolarPanelCost {
+					IndexDomain: b;
+					Definition: data { 'large panel size' : 20,  'medium panel size' : 15,  'small panel size' : 8 };
+				}
+				Parameter cost_Solar_service {
+					IndexDomain: (l);
+					Text: "Instalation unitary fixed cost of each solar panel in node (l)";
+					Definition: YearsToInstances*card(Instances)*sum[(b),UnitarySolarPanelCost(b)*NSPN(l,b)/SolarPanelUsefulLife(b)];
+					Comment: "1 year= 96 instances x 360 days = 34560 instances->   cost_S_city_service=(1/34560)*(#instances*Cost of Useful Life)/useful Life";
+				}
+				Parameter NSPN {
+					IndexDomain: (l,b);
+					Text: "Number of Solar Panels in Node (l) of Size (b)";
+					Definition: {
+						data 
+						{ ( 'solar node I' , 'large panel size' ) : 1000,  ( 'solar node I' , 'small panel size' ) :    1,
+						  ( 'solar node II', 'large panel size' ) : 2000 }
+					}
+				}
+				Parameter MEGCPSPS {
+					IndexDomain: b;
+					Text: "Maximum Energy Generation Capacity per Solar Panel size (b) MW/instance";
+					Definition: data { 'large panel size' : 0.003,  'medium panel size' : 0.002,  'small panel size' : 0.002 };
+				}
+				Parameter MSEGN {
+					IndexDomain: (l,b);
+					Text: "Max Solar Energy Generation for Node (l) using Panels of size (b) MW/instance";
+					Definition: Power_Units_factor('Dfault: Mw/instance')*NSPN(l,b)*MEGCPSPS(b)*IFC;
+					Comment: {
+						"Máxima Generación de Energía Solar que se puede entregar utilizando paneles de tamaño (b) en el nodo (l)
+						
+						Generación de Energía Solar por el nodo l en el período t bajo el escenario g,v,b Mw/h"
+					}
+				}
+				Parameter total_MSEGN {
+					IndexDomain: (l,i);
+					Text: "Total Max Solar Energy Generation for Node (l) by instance (i) in MW/instance";
+					Definition: sum[(b), MSEGN(l,b)];
+				}
+				Parameter Gran_Total_Solar_Generation {
+					IndexDomain: (l);
+					Text: "Max Solar Node (l) Generation";
+					Definition: sum[(i),total_MSEGN(l,i)];
+				}
+				Parameter C_PSE_City {
+					IndexDomain: (l,j,t,i);
+					Text: "Operating cost of solar energy production, using node (l), with model size panels (b) for city (j), in quarter (t) in USD by MW/instances";
+					Definition: GCKWI*total_MSEGN(l,i);
+					Comment: {
+						"Asumiendo que Si el Costo de un panel es de x Kw/h y una hora (h) son 60 min entonces 
+						60 min serían 4 instancias"
+					}
+				}
+				Parameter C_PSE_District {
+					IndexDomain: (l,k,t,i);
+					Text: "Cost of Producing Solar Energy, using node (l), for the industrial district (k), in period (t) and instance (i) in USD by Kw/instances";
+					Definition: GCKWI*total_MSEGN(l,i)+ sum[(b),UnitarySolarPanelCost(b)*NSPN(l,b)]/card(Instances);
+				}
+				Parameter pi_USE_City {
+					IndexDomain: (l,j,t,i,g,v);
+					Text: "Probability of Using Solar Energy, from node (l), for city (j), during period (t), and instance (i) under scenario (g,v)";
+					Range: nonnegative;
+					Comment: {
+						"Round(Uniform(0,0.5),2);"
+					}
+				}
+				Parameter pi_USE_District {
+					IndexDomain: (l,i,g,v);
+					Text: "Probability of Using Solar Energy, from node (l), for the industrial district (k), during period (t), under scenario (g,v,b)";
+					Range: nonnegative;
+					Comment: {
+						"Round(Uniform(0,0.5),2);"
+					}
+				}
+				Parameter Penalty_SE_City_plus {
+					Text: "Penalty for Solar Energy deficit for city";
+					Definition: 1000000000000;
+				}
+				Parameter Penalty_SE_City_minus {
+					Text: "Penalty for excess Solar Energy, using node (l), for city (j), in period (t), under scenario (𝒈, 𝒗, 𝒃)";
+					Definition: 1;
+				}
+				Parameter Penalty_SE_District_plus {
+					Text: "Penalty for Solar Energy deficit for district";
+					Definition: 1000000000000;
+				}
+				Parameter Penalty_SE_District_minus {
+					Text: "Penalty for excess Solar Energy for district";
+					Definition: 1;
+				}
+				Constraint MaxSolarCapacityByInstance {
+					IndexDomain: (l,j,k,i);
+					Definition: {
+						sum[(t),psi_ASE_City(l,j,t,i)]
+						+sum[(t),psi_ASE_District(l,k,t,i)] <= total_MSEGN(l,i)
+					}
+				}
+				Constraint SolarCapacitySeletedCityService {
+					IndexDomain: (l,j,i);
+					Definition: sum[(t),psi_ASE_City(l,j,t,i)] <= total_MSEGN(l,i)*Y_SSN_city(l,j);
+				}
+				Constraint SolarCapacitySeletedDistrictService {
+					IndexDomain: (l,k,i);
+					Definition: sum[(t),psi_ASE_District(l,k,t,i)]<=total_MSEGN(l,i)*Y_SSN_district(l,k);
+				}
+				Constraint Solar_SendToCity {
+					IndexDomain: (j,t,i);
+					Definition: {
+						sum[(l,g,v),psi_ASE_City(l,j,t,i)
+						+psi_SEP_City_plus(l,j,t,i,g,v)
+						-psi_SEP_City_minus(l,j,t,i,g,v)]
+						
+						<= D_City(j,t,i)
+						-(sum[(m),lambda_AEE_City(m,j,t,i)]
+						+sum[(n),delta_AEFC_City(n,j,t,i)])
+					}
+					Comment: {
+						"sum[(l,g,v),psi_ASE_City(l,j,t,i)
+						+psi_SEP_City_plus(l,j,t,i,g,v)
+						-psi_SEP_City_minus(l,j,t,i,g,v)]
+						
+						= D_City(j,t,i)
+						-(sum[(m,f,h),lambda_AEE_City(m,j,t,i)
+						+lambda_EEP_City_plus(m,j,t,i,f,h)
+						+lambda_EEP_City_minus(m,j,t,i,f,h)]
+						
+						+sum[(n),delta_AEFC_City(n,j,t,i)
+						+delta_AEFC_City_plus(n,j,t,i)
+						+delta_AEFC_City_minus(n,j,t,i)])"
+					}
+				}
+				Constraint Solar_SendToDistrict {
+					IndexDomain: (k,t,i);
+					Definition: {
+						sum[(l,g,v),psi_ASE_District(l,k,t,i)
+						+psi_SEP_District_plus(l,k,t,i,g,v)
+						-psi_SEP_District_minus(l,k,t,i,g,v)]
+						
+						<= D_District(k,t,i)
+						-(sum[(m),lambda_AEE_District(m,k,t,i)]
+						+sum[(n),delta_AEFC_District(n,k,t,i)])
+					}
+					Comment: {
+						"sum[(l,g,v),psi_ASE_District(l,k,t,i)
+						+psi_SEP_District_plus(l,k,t,i,g,v)
+						-psi_SEP_District_minus(l,k,t,i,g,v)]
+						
+						= D_District(k,t,i)
+						-(sum[(m,f,h),lambda_AEE_District(m,k,t,i)
+						+lambda_EEP_District_plus(m,k,t,i,f,h)
+						+lambda_EEP_District_minus(m,k,t,i,f,h)]
+						
+						+sum[(n),delta_AEFC_District(n,k,t,i)
+						+delta_AEFC_District_plus(n,k,t,i)
+						+delta_AEFC_District_minus(n,k,t,i)])"
+					}
+				}
+			}
+		}
+		Section Eolical_Command_Center {
+			DeclarationSection Eolical {
+				Variable Y_Eolical_city {
+					IndexDomain: (m,j);
+					Range: binary;
+				}
+				Variable Y_Eolical_district {
+					IndexDomain: (m,k);
+					Range: binary;
+				}
+				Variable lambda_AEE {
+					IndexDomain: (m,t,i);
+					Text: "Total Eolical Energy Supply, of the node (l) in the period (t)";
+					Range: nonnegative;
+					Definition: sum[(j,k),(lambda_AEE_City(m,j,t,i)+lambda_AEE_District(m,k,t,i))];
+				}
+				Variable lambda_AEE_City {
+					IndexDomain: (m,j,t,i);
+					Text: "Amount of Eolical Energy produced by node (m) for city (j) in period (t)";
+					Range: nonnegative;
+					Definition: fr_Eolical_City(m,j,t,i)*D_City(j,t,i);
+				}
+				Variable lambda_AEE_District {
+					IndexDomain: (m,k,t,i);
+					Text: "Amount of Eolical Energy produced by node (m) for the industrial district (k) in period (t)";
+					Range: nonnegative;
+					Definition: fr_Eolical_District(m,k,t,i)*D_District(k,t,i);
+				}
+				Variable lambda_EEP_City_plus {
+					IndexDomain: (m,j,t,i,f,h);
+					Text: "Deficit of Eolical Energy Production, of node (m) for city (j) in period (t) under scenario (f,h)";
+					Range: nonnegative;
+				}
+				Variable lambda_EEP_City_minus {
+					IndexDomain: (m,j,t,i,f,h);
+					Text: "Excess of Eolical Energy Production, of node (m) for city (j) in period (t) under scenario (f,h)";
+					Range: nonnegative;
+				}
+				Variable lambda_EEP_District_plus {
+					IndexDomain: (m,k,t,i,f,h);
+					Text: "Deficit of Eolical Energy Production, of node (m) for the industrial (k) in period (t) under scenario (f,h)";
+					Range: nonnegative;
+				}
+				Variable lambda_EEP_District_minus {
+					IndexDomain: (m,k,t,i,f,h);
+					Text: "Excess of Eolical Energy Production, of node (m) for the industrial district (k) in period (t) under scenario (f,h)";
+					Range: nonnegative;
+				}
+				Parameter WindTurbineUsefulLife {
+					IndexDomain: w;
+					Definition: {
+						data 
+						{ '36 m + 65 m'   : 30,  '31 m + 60 m'   : 30,  '29 m + 55 m'   : 28,  '26 m + 55 m'   : 25,  '23 m + 50 m'   : 20,
+						  '15 m + 40 m '  : 25,  '10 m + 30 m'   : 26,  '6.25 m + 20 m' : 24,  '3.5 m + 15 m'  : 20,  '1.2 m + 5 m'   : 10 }
+					}
+				}
+				Parameter UnitaryWindTurbineCost {
+					IndexDomain: w;
+					Definition: {
+						data 
+						{ '36 m + 65 m'   : 50,  '31 m + 60 m'   : 40,  '29 m + 55 m'   : 30,  '26 m + 55 m'   : 20,  '23 m + 50 m'   : 10,
+						  '15 m + 40 m '  :  8,  '10 m + 30 m'   :  6,  '6.25 m + 20 m' :  4,  '3.5 m + 15 m'  :  3,  '1.2 m + 5 m'   :  2 }
+					}
+				}
+				Parameter cost_Eolical_service {
+					IndexDomain: (m);
+					Text: "Instalation unitary fixed cost of each wind turbine in node (m)";
+					Definition: YearsToInstances*card(Instances)*sum[(w),UnitaryWindTurbineCost(w)*NWTN(m,w)/WindTurbineUsefulLife(w)];
+				}
+				Parameter NWTN {
+					IndexDomain: (m,w);
+					Text: "Number of Wind Turbines in Node (m) of Size (w)";
+					Definition: data { ( 'eolical node I', '36 m + 65 m' ) : 300,  ( 'eolical node I', '1.2 m + 5 m' ) : 1,  ( 'eolical node II', '36 m + 65 m' ) : 200 };
+				}
+				Parameter MEGCWTS {
+					IndexDomain: (w);
+					Text: "Maximum Energy Generation Capacity per Wind Turbine size (w) MW/instance";
+					Definition: {
+						data 
+						{ '36 m + 65 m'   : 1.500e+00,  '31 m + 60 m'   : 1.300e+00,  '29 m + 55 m'   : 8.500e-01,  '26 m + 55 m'   : 7.500e-01,
+						  '23 m + 50 m'   : 6.000e-01,  '15 m + 40 m '  : 2.700e-01,  '10 m + 30 m'   : 1.250e-01,  '6.25 m + 20 m' : 3.000e-02,
+						  '3.5 m + 15 m'  : 1.000e-02,  '1.2 m + 5 m'   : 8.500e-04 }
+					}
+				}
+				Parameter MEEGN {
+					IndexDomain: (m,w);
+					Text: "Max Eolical Energy Generation for Node (l) using Panels of size (b) MW/instance";
+					Definition: Power_Units_factor('Dfault: Mw/instance')*NWTN(m,w)*MEGCWTS(w)*IFC;
+				}
+				Parameter total_MEEGN {
+					IndexDomain: (m,i);
+					Text: "Total Max Solar Energy Generation for Node (m) by instance (i) in Kw/instance";
+					Definition: sum[(w), MEEGN(m,w)];
+				}
+				Parameter Gran_Total_Eolical_Generation {
+					IndexDomain: (m);
+					Text: "Max Eolical Node (m) Generation";
+					Definition: sum[(i),total_MEEGN(m,i)];
+				}
+				Parameter C_PEE_City {
+					IndexDomain: (m,j,t,i);
+					Text: "Cost of Producing Eolical Energy, using node (m), for city (j), in period (t) and instance (i)";
+					Definition: GCKWI*total_MEEGN(m,i)+ sum[(w),UnitaryWindTurbineCost(w)*NWTN(m,w)]/card(Instances);
+				}
+				Parameter C_PEE_District {
+					IndexDomain: (m,k,t,i);
+					Text: "Cost of Producing Eolical Energy, using node (m), for the industrial district (k), in period (t) and instance (i)";
+					Definition: {
+						GCKWI*total_MEEGN(m,i)+ sum[(w),UnitaryWindTurbineCost(w)*NWTN(m,w)]/card(Instances);
+					}
+				}
+				Parameter pi_UEE_City {
+					IndexDomain: (m,j,t,i,f,h);
+					Text: "Probability of Using Eolical Energy, from node (m), for city (j), during period (t), under scenario (f,h,w)";
+				}
+				Parameter pi_UEE_District {
+					IndexDomain: (m,k,t,i,f,h);
+					Text: "Probability of Using Eolical Energy, from node (m), for the industrial district (k), during period (t), under scenario (f,h,w)";
+				}
+				Parameter Penalty_EE_City_plus {
+					Text: "Penalty for Eolical Energy deficit, using node (m), for city (j), in period (t), under scenario (f,h)";
+					Definition: 1000000000000;
+				}
+				Parameter Penalty_EE_City_minus {
+					Text: "Penalty for excess Eolical Energy, using node (m), for city (j), in period (t), under scenario (f,h)";
+					Definition: 1;
+				}
+				Parameter Penalty_EE_District_plus {
+					Text: "Penalty for Eolical Energy deficit, using node (m), for the industrial district (k), in period (t), under scenario (f,h)";
+					Definition: 1000000000000;
+				}
+				Parameter Penalty_EE_District_minus {
+					Text: "Penalty for excess Eolical Energy, using node (m), for the industrial district (k), in period (t), under scenario (f,h,w)";
+					Definition: 1;
+				}
+				Constraint MaxEolicalCapacityByInstance {
+					IndexDomain: (m,j,k,i);
+					Definition: sum[(t),lambda_AEE_City(m,j,t,i)]+sum[(t),lambda_AEE_District(m,k,t,i)]<=total_MEEGN(m,i);
+				}
+				Constraint EolicalCapacitySeletedCityService {
+					IndexDomain: (m,j,i);
+					Definition: sum[(t),lambda_AEE_City(m,j,t,i)] <= total_MEEGN(m,i)*Y_Eolical_city(m,j);
+				}
+				Constraint EolicalCapacitySeletedDistrictService {
+					IndexDomain: (m,k,i);
+					Definition: sum[(t),lambda_AEE_District(m,k,t,i)]<=total_MEEGN(m,i)*Y_Eolical_district(m,k);
+				}
+				Constraint Eolical_SendToCity {
+					IndexDomain: (j,t,i);
+					Definition: {
+						sum[(m,f,h),lambda_AEE_City(m,j,t,i)
+						+lambda_EEP_City_plus(m,j,t,i,f,h)
+						-lambda_EEP_City_minus(m,j,t,i,f,h)]
+						
+						<= D_City(j,t,i)
+						-(sum[(l),psi_ASE_City(l,j,t,i)]
+						+sum[(n),delta_AEFC_City(n,j,t,i)])
+					}
+					Comment: {
+						"sum[(m,f,h),lambda_AEE_City(m,j,t,i)
+						+lambda_EEP_City_plus(m,j,t,i,f,h)
+						-lambda_EEP_City_minus(m,j,t,i,f,h)]
+						
+						= D_City(j,t,i)
+						-(sum[(l,g,v),psi_ASE_City(l,j,t,i)
+						+psi_SEP_City_plus(l,j,t,i,g,v)
+						+psi_SEP_City_minus(l,j,t,i,g,v)]
+						
+						+sum[(n),delta_AEFC_City(n,j,t,i)
+						+delta_AEFC_City_plus(n,j,t,i)
+						+delta_AEFC_City_minus(n,j,t,i)])"
+					}
+				}
+				Constraint Eolical_SendToDistrict {
+					IndexDomain: (k,t,i);
+					Definition: {
+						sum[(m,f,h),lambda_AEE_District(m,k,t,i)
+						+lambda_EEP_District_plus(m,k,t,i,f,h)
+						-lambda_EEP_District_minus(m,k,t,i,f,h)]
+						
+						<= D_District(k,t,i)
+						-(sum[(l),psi_ASE_District(l,k,t,i)]
+						+sum[(n),delta_AEFC_District(n,k,t,i)])
+					}
+					Comment: {
+						"sum[(m,f,h),lambda_AEE_District(m,k,t,i)
+						+lambda_EEP_District_plus(m,k,t,i,f,h)
+						-lambda_EEP_District_minus(m,k,t,i,f,h)]
+						
+						= D_District(k,t,i)
+						-(sum[(l,g,v),psi_ASE_District(l,k,t,i)
+						+psi_SEP_District_plus(l,k,t,i,g,v)
+						+psi_SEP_District_minus(l,k,t,i,g,v)]
+						
+						+sum[(n),delta_AEFC_District(n,k,t,i)
+						+delta_AEFC_District_plus(n,k,t,i)
+						+delta_AEFC_District_minus(n,k,t,i)])"
+					}
+				}
+			}
+		}
+		Section Hydrogen_Command_Center {
+			DeclarationSection Electrolyzers {
+				Variable Y_Electrolyzer_FuelCells {
+					IndexDomain: (o,n);
+					Range: binary;
+				}
+				Variable Y_Electrolyzer_Storage {
+					IndexDomain: (o,a);
+					Range: binary;
+				}
+				Constraint Electricity_Excess {
+					IndexDomain: (t,i);
+					Definition: {
+						sum[(o),gamma_IEE_Electricity(o,t,i)]
+						+sum[(o),gamma_IEE_Energy_plus(o,t,i)]
+						-sum[(o),gamma_IEE_Energy_minus(o,t,i)]
+						
+						=
+						
+						sum[(l),total_MSEGN(l,i)]
+						+sum[(m),total_MEEGN(m,i)]
+						
+						-(sum[(l,j),psi_ASE_City(l,j,t,i)]
+						+sum[(l,k),psi_ASE_District(l,k,t,i)]
+						+sum[(m,j),lambda_AEE_City(m,j,t,i)]
+						+sum[(m,k),lambda_AEE_District(m,k,t,i)])
+					}
+				}
+				Variable gamma_IEE_Electricity {
+					IndexDomain: (o,t,i);
+					Text: "Input Energy for node electrolyzers (o), in period (t), in instances (i) in MW/i";
+					Range: nonnegative;
+					Comment: "This is the excess electricity";
+				}
+				Variable gamma_IEE_Energy_plus {
+					IndexDomain: (o,t,i);
+					Range: nonnegative;
+				}
+				Parameter Penalty_gamma_IEE_Energy_plus {
+					Definition: 9000000000000;
+				}
+				Variable gamma_IEE_Energy_minus {
+					IndexDomain: (o,t,i);
+					Range: nonnegative;
+				}
+				Parameter Penalty_gamma_IEE_Energy_minus {
+					Definition: 50000;
+				}
+				Variable gamma_IEE_Gas {
+					IndexDomain: (o,t,i);
+					Text: "Amount Hydrogen Gas convertion (gamma_IEE_Energy) for node electrolyzers (o), in period (t), in instances (i) in Kg/i";
+					Range: nonnegative;
+					Definition: 0.033*gamma_IEE_Electricity(o,t,i)*0.70*IFC;
+				}
+				Variable gamma_AHG {
+					IndexDomain: (o,t,i);
+					Range: nonnegative;
+					Definition: sum[(n,a),gamma_AHG_FuellCell(o,n,t,i) + gamma_AHG_Storage(o,a,t,i)];
+				}
+				Variable gamma_AHG_FuellCell {
+					IndexDomain: (o,n,t,i);
+					Text: "Amount of Hydrogen Gas produced by node (o) for Fuell Cell (n) in period (t) in instance (i)";
+					Range: nonnegative;
+				}
+				Variable gamma_HGP_FuelCell_plus {
+					IndexDomain: (o,n,t,i,s);
+					Text: "Deficit of Hydrogen Gas Production, of node (o), for Fuel Cell (n), in period (t), in instance (i), under scenario (s)";
+					Range: nonnegative;
+				}
+				Variable gamma_HGP_FuelCell_minus {
+					IndexDomain: (o,n,t,i,s);
+					Text: "Excess of Hydrogen Gas Production, of node (o), for Fuel Cell (n), in period (t), in instance (i), under scenario (s)";
+					Range: nonnegative;
+				}
+				Variable gamma_AHG_Storage {
+					IndexDomain: (o,a,t,i);
+					Text: "Amount of Hydrogen Gas produced by node (o), for Storage (a), in period (t), in instance (i)";
+					Range: nonnegative;
+				}
+				Variable gamma_HGP_Storage_plus {
+					IndexDomain: (o,a,t,i,s);
+					Text: "Deficit of Hydrogen Gas Production, of node (o), for Storage (a), in period (t), in instance (i), under scenario (s)";
+					Range: nonnegative;
+				}
+				Variable gamma_HGP_Storage_minus {
+					IndexDomain: (o,a,t,i,s);
+					Text: "Excess of Hydrogen Gas Production, of node (o), for Storage (a), in period (t), in instance (i), under scenario (s)";
+					Range: nonnegative;
+				}
+				Parameter EPT {
+					Definition: 24;
+				}
+				Parameter ElectrolizerEfficiency {
+					IndexDomain: r;
+					Text: "Electrolyzer Efficency";
+					Definition: data { Alkaline : 0.730,  'Proton Exchange Membrane' : 0.560 };
+				}
+				Parameter ElectrolizerLossFactor {
+					IndexDomain: r;
+					Text: "Loss Factor";
+					Definition: data { Alkaline : 0.200,  'Proton Exchange Membrane' : 0.060 };
+				}
+				Parameter ElectrolyzerUsefulLife {
+					IndexDomain: r;
+					Text: "Useful life in Years";
+					Definition: data { Alkaline : 10,  'Proton Exchange Membrane' : 4 };
+				}
+				Parameter UnitaryElectrolizerCost {
+					IndexDomain: r;
+					Definition: data { Alkaline : 500,  'Proton Exchange Membrane' : 400 };
+				}
+				Parameter cost_Electrolizers_service {
+					IndexDomain: o;
+					Text: "Instalation unitary fixed cost of each electrolizer in node (o)";
+					Definition: YearsToInstances*card(Instances)*sum[(r),UnitaryElectrolizerCost(r)*NEN(o,r)/ElectrolyzerUsefulLife(r)];
+				}
+				Parameter NEN {
+					IndexDomain: (o,r);
+					Text: "Number of Electrolyzers of Node (o) of type (r)";
+					Definition: data { ( 'Gas Generation Node I', Alkaline ) : 20,  ( 'Gas Generation Node I', 'Proton Exchange Membrane' ) : 10 };
+				}
+				Parameter MEC {
+					IndexDomain: r;
+					Text: "Maximum Electrolyzer Capacity by type (r) in MW";
+					Definition: data { Alkaline : 0.040,  'Proton Exchange Membrane' : 0.020 };
+				}
+				Parameter MaxElectS {
+					IndexDomain: (o,r);
+					Text: "Maximum Capacity of Energy from node (o) using Electrolyzers of size (r) in MW/h";
+					Definition: Power_Units_factor('Dfault: Mw/instance')*NEN(o,r)*MEC(r)*EPT*ElectrolizerEfficiency(r)*ElectrolizerLossFactor(r);
+				}
+				Parameter total_MaxElect {
+					IndexDomain: (o,i);
+					Text: "Total Max Electrolyzer Capacity for Node (o) by instance (i) in MW/instance";
+					Definition: sum[(r), MaxElectS(o,r)]*IFC;
+				}
+				Parameter Gran_Total_Electro_Generation {
+					IndexDomain: o;
+					Text: "Max Capacity Node (o) Generation for all instances MW";
+					Definition: sum[(i),total_MaxElect(o,i)];
+				}
+				Parameter MaxHG {
+					IndexDomain: (o,r);
+					Text: "Maximum Hydrogen Gas Generation from node (o) using Electrolyzers of size (r) in Kg";
+					Definition: 1/5*MaxElectS(o,r)*Power_Units_factor('Kw to Mw')*0.70;
+				}
+				Parameter total_MaxHG {
+					IndexDomain: (o,i);
+					Text: "Total Max Gas Hdrogen Generated by electrolizer node (o) by instances (i)";
+					Definition: sum[(r), MaxHG(o,r)]*IFC;
+				}
+				Parameter Gran_Total_HG_Generation {
+					IndexDomain: o;
+					Definition: sum[(i),total_MaxHG(o,i)];
+				}
+				Parameter C_HG_FuelCell {
+					IndexDomain: (o,n,t,i);
+					Text: "Operating cost of Hydrogen Gas production, using node (o), for Fuell Cell node (n), in quarter (t) in USD by MW/instances";
+					Definition: GCKWI*total_MaxHG(o,i) + sum[(r),UnitaryElectrolizerCost(r)*NEN(o,r)]/card(Instances);
+				}
+				Parameter C_HG_Storage {
+					IndexDomain: (o,a,t,i);
+					Text: "Operating cost of Hydrogen Gas production, using node (o), for Storage node (a), in quarter (t) in USD by MW/instances";
+					Definition: GCKWI*total_MaxHG(o,i) + sum[(r),UnitaryElectrolizerCost(r)*NEN(o,r)]/card(Instances);
+				}
+				Parameter pi_UHG_FuelCell {
+					IndexDomain: (o,n,t,i,s);
+					Definition: round(uniform(0,1),2);
+				}
+				Parameter pi_UHG_Storage {
+					IndexDomain: (o,a,t,i,s);
+					Definition: round(uniform(0,1),2);
+				}
+				Parameter Penalty_HG_FuelCell_plus {
+					Text: "Penalty for Hydrogen Gas deficit for Fuel Cell";
+					Definition: 10000000000;
+				}
+				Parameter Penalty_HG_FuelCell_minus {
+					Text: "Penalty for Hydrogen Gas excess for Fuel Cell";
+					Definition: 5000;
+				}
+				Parameter Penalty_HG_Storage_plus {
+					Text: "Penalty for Hydrogen Gas deficit for Storage";
+					Definition: 1000000000;
+				}
+				Parameter Penalty_HG_Storage_minus {
+					Text: "Penalty for Hydrogen Gas excess for Storage";
+					Definition: 1;
+				}
+			}
+			DeclarationSection Fuel_Cells {
+				Variable Y_FuelCell_City {
+					IndexDomain: (n,j);
+					Range: binary;
+				}
+				Variable Y_FuelCell_District {
+					IndexDomain: (n,k);
+					Range: binary;
+				}
+				Variable delta_HG_to_E {
+					IndexDomain: (o,n,t,i);
+					Text: "Conversion of Hydrogen Gas from the node (o) to Electricity using the Fuel Cell node (n), in the period (t), in instance (i) in MW/i";
+					Range: nonnegative;
+					Definition: gamma_AHG_FuellCell(o,n,t,i)*33*Power_Units_factor('Kw to Mw')*IFC*0.75;
+					Comment: "1KG => 33KW/h";
+				}
+				Variable delta_AEFC {
+					IndexDomain: (n,t,i);
+					Text: "Total Fuel Cells Energy Supply, of the node (l) in the period (t)";
+					Range: nonnegative;
+					Definition: sum[(j,k),(delta_AEFC_City(n,j,t,i) + delta_AEFC_District(n,k,t,i))];
+				}
+				Variable delta_AEFC_City {
+					IndexDomain: (n,j,t,i);
+					Text: "Amount of Energy with Fuel Cells produced by node (n) for city (j) in period (t)";
+					Range: nonnegative;
+					Definition: fr_FuelCell_City(n,j,t,i)*D_City(j,t,i);
+				}
+				Variable delta_AEFC_City_plus {
+					IndexDomain: (n,j,t,i);
+					Text: "Deficit of Energy Production, of node (n) for the city (j) in period (t) in instance (i)";
+					Range: nonnegative;
+				}
+				Variable delta_AEFC_City_minus {
+					IndexDomain: (n,j,t,i);
+					Text: "Excess of Energy Production, of node (n) for the city (j) in period (t) in instance (i)";
+					Range: nonnegative;
+				}
+				Variable delta_AEFC_District {
+					IndexDomain: (n,k,t,i);
+					Text: "Amount of Energy produced with Fuel Cell, by node (n), for the industrial district (k) in period (t)";
+					Range: nonnegative;
+					Definition: fr_FuelCell_District(n,k,t,i)*D_District(k,t,i);
+				}
+				Variable delta_AEFC_District_plus {
+					IndexDomain: (n,k,t,i);
+					Text: "Deficit of Energy Production, of node (n) for distric (k) in period (t) in instance (i)";
+					Range: nonnegative;
+				}
+				Variable delta_AEFC_District_minus {
+					IndexDomain: (n,k,t,i);
+					Text: "Excess of Energy Production, of node (n) for disctrict (j) in period (t) in instance (i)";
+					Range: nonnegative;
+				}
+				Parameter FCPT {
+					Text: "Fuel Cells Productive Time per day";
+					Definition: 24;
+				}
+				Parameter FuelCellsEfficiency {
+					IndexDomain: z;
+					Text: "Fuel Cells Efficency";
+					Definition: data { 'PEM: Proton exchange membrane' : 0.500,  'SOFC: Solid oxide fuel cell' : 0.800 };
+				}
+				Parameter FuelCellLossFactor {
+					IndexDomain: z;
+					Text: "Loss Factor";
+					Definition: data { 'PEM: Proton exchange membrane' : 0.200,  'SOFC: Solid oxide fuel cell' : 0.200 };
+				}
+				Parameter FuelCellUsefulLife {
+					IndexDomain: z;
+					Text: "Useful life in Years";
+					Definition: data { 'PEM: Proton exchange membrane' : 1,  'SOFC: Solid oxide fuel cell' : 4 };
+				}
+				Parameter UnitaryFuelCellCost {
+					IndexDomain: z;
+					Definition: data { 'PEM: Proton exchange membrane' : 60,  'SOFC: Solid oxide fuel cell' : 40 };
+				}
+				Parameter cost_FuelCell_service {
+					IndexDomain: n;
+					Text: "Instalation unitary fixed cost of each Fuel Cell in node (n)";
+					Definition: YearsToInstances*card(Instances)*sum[(z),UnitaryFuelCellCost(z)*NFCN(n,z)/FuelCellUsefulLife(z)];
+				}
+				Parameter NFCN {
+					IndexDomain: (n,z);
+					Definition: {
+						data 
+						{ ( 'Fuel Cell Node I' , 'PEM: Proton exchange membrane' ) : 5,  ( 'Fuel Cell Node I' , 'SOFC: Solid oxide fuel cell'   ) : 6,
+						  ( 'Fuel Cell Node II', 'PEM: Proton exchange membrane' ) : 3,  ( 'Fuel Cell Node II', 'SOFC: Solid oxide fuel cell'   ) : 3 }
+					}
+				}
+				Parameter MFCC {
+					IndexDomain: z;
+					Text: "Max Electrolizer Capacity by type (r) MW";
+					Definition: data { 'PEM: Proton exchange membrane' : 1,  'SOFC: Solid oxide fuel cell' : 2 };
+				}
+				Parameter MaxFuelCellS {
+					IndexDomain: (n,z);
+					Text: "Max Capacity of energy from node (o) using Fuel CellS of size (r) in MW/h";
+					Definition: Power_Units_factor('Dfault: Mw/instance')*NFCN(n,z)*MFCC(z)*FCPT*FuelCellsEfficiency(z)*FuelCellLossFactor(z);
+				}
+				Parameter total_MaxFuelCell {
+					IndexDomain: (n,i);
+					Text: "Total Max Electrolyzer Capacity for Node (o) by instance (i) in MW/instance";
+					Definition: sum[(z), MaxFuelCellS(n,z)]*IFC;
+				}
+				Parameter Gran_Total_FuelCell_Generation {
+					IndexDomain: n;
+					Text: "Max Capacity Node (n) Generation for all instances";
+					Definition: sum[(i),total_MaxFuelCell(n,i)];
+				}
+				Parameter C_PEFC_City {
+					IndexDomain: (n,j,t,i);
+					Text: "Operative Cost of Producing Energy with Fuel Cells, using node (n), for city (j), in period (t), in instance (i) by MW/instances";
+					Definition: GCKWI*total_MaxFuelCell(n,i) + sum[(z),UnitaryFuelCellCost(z)*NFCN(n,z)]/card(Instances);
+				}
+				Parameter C_PEFC_District {
+					IndexDomain: (n,k,t,i);
+					Text: "Operative Cost of Producing Energy with Fuel Cells, using node (n), for industrial district (k), in period (t), in instance (i) by MW/instances";
+					Definition: GCKWI*total_MaxFuelCell(n,i) + sum[(z),UnitaryFuelCellCost(z)*NFCN(n,z)]/card(Instances);
+				}
+				Parameter penalty_delta_AEFC_City_plus {
+					Definition: 1000000000000;
+				}
+				Parameter penalty_delta_AEFC_City_minus {
+					Definition: 1;
+				}
+				Parameter penalty_delta_AEFC_District_plus {
+					Definition: 1000000000000;
+				}
+				Parameter penalty_delta_AEFC_District_minus {
+					Definition: 1;
+				}
+				Parameter pi_UEFC_City {
+					IndexDomain: (n,j,t,i,s);
+					Definition: round(uniform(0,1),2);
+				}
+				Parameter pi_UEFC_District {
+					IndexDomain: (n,k,t,i,s);
+					Definition: round(uniform(0,1),2);
+				}
+				Constraint FuelCellSeletedCityService {
+					IndexDomain: (n,j,i);
+					Definition: sum[(t),delta_AEFC_City(n,j,t,i)] <= total_MaxFuelCell(n,i)*Y_FuelCell_City(n,j);
+				}
+				Constraint FuelCellSeletedDistrictService {
+					IndexDomain: (n,k,i);
+					Definition: sum[(t),delta_AEFC_District(n,k,t,i)] <= total_MaxFuelCell(n,i)*Y_FuelCell_District(n,k);
+				}
+				Constraint Puente {
+					IndexDomain: (t,i);
+					Definition: {
+						sum[(o,n),gamma_AHG_FuellCell(o,n,t,i)]
+						+sum[(o,n,s),gamma_HGP_FuelCell_plus(o,n,t,i,s)]
+						-sum[(o,n,s),gamma_HGP_FuelCell_minus(o,n,t,i,s)]
+						
+						=
+						
+						sum[(n,j),delta_AEFC_City(n,j,t,i)]
+						+sum[(n,k),delta_AEFC_District(n,k,t,i)]
+					}
+				}
+				Constraint DemandContributionCity {
+					IndexDomain: (j,t,i);
+					Definition: {
+						sum[(n),delta_AEFC_City(n,j,t,i)
+						+delta_AEFC_City_plus(n,j,t,i)
+						-delta_AEFC_City_minus(n,j,t,i)]
+						
+						<= D_City(j,t,i)
+						-(sum[(l),psi_ASE_City(l,j,t,i)]
+						+sum[(m),lambda_AEE_City(m,j,t,i)])
+					}
+					Comment: {
+						"sum[(n),delta_AEFC_City(n,j,t,i)
+						+delta_AEFC_City_plus(n,j,t,i)
+						-delta_AEFC_City_minus(n,j,t,i)]
+						
+						<= D_City(j,t,i)
+						-(sum[(l,g,v),psi_ASE_City(l,j,t,i)
+						+psi_SEP_City_plus(l,j,t,i,g,v)
+						+psi_SEP_City_minus(l,j,t,i,g,v)]
+						
+						+sum[(m,f,h),lambda_AEE_City(m,j,t,i)
+						+lambda_EEP_City_plus(m,j,t,i,f,h)
+						+lambda_EEP_City_minus(m,j,t,i,f,h)])"
+					}
+				}
+				Constraint DemandContributionDistrict {
+					IndexDomain: (k,t,i);
+					Definition: {
+						sum[(n),delta_AEFC_District(n,k,t,i)
+						+delta_AEFC_District_plus(n,k,t,i)
+						-delta_AEFC_District_minus(n,k,t,i)]
+						
+						<= D_District(k,t,i)
+						-(sum[(l),psi_ASE_District(l,k,t,i)]
+						+sum[(m),lambda_AEE_District(m,k,t,i)])
+					}
+				}
+			}
+			DeclarationSection Storages {
+				Variable Y_Storage_District {
+					IndexDomain: (a,k);
+					Range: binary;
+				}
+				Variable theta_StoredHG {
+					IndexDomain: (t,i);
+					Range: nonnegative;
+				}
+				Variable theta_AHGS_District {
+					IndexDomain: (a,k,t,i);
+					Text: "Amount of Hydrogen Gas storaged by node (a) for district (k) in period (t) in instance (i)";
+					Range: nonnegative;
+				}
+				Variable theta_AHGS_District_plus {
+					IndexDomain: (a,k,t,i);
+					Text: "Deficit of Hydrogen Gas Stored, of node (a) for district (k) in period (t), in instance (i)";
+					Range: nonnegative;
+				}
+				Variable theta_AHGS_District_minus {
+					IndexDomain: (a,k,t,i);
+					Text: "Excess of Hydrogen Gas Stored, of node (a) for district (k) in period (t), in instance (i)";
+					Range: nonnegative;
+				}
+				Parameter Penalty_theta_AHGS_District_plus {
+					Text: "Penalty for Eolical Energy deficit, using node (a), for district (k), in period (t), in instance (i)";
+					Definition: 100000;
+				}
+				Parameter Penalty_theta_AHGS_District_minus {
+					Text: "Penalty for Eolical Energy excess, using node (a), for district (k), in period (t), in instance (i)";
+					Definition: 1;
+				}
+				Parameter StorageUsefulLife {
+					IndexDomain: q;
+					Definition: {
+						data { 'Pressurized storage' : 40,  'Gas caverns
+						' : 30 }
+					}
+				}
+				Parameter UnitaryStorageCost {
+					IndexDomain: q;
+					Text: "Unit cost of each type warehouse (q) in USD";
+					Definition: {
+						data { 'Pressurized storage' : 700,  'Gas caverns
+						' : 500 }
+					}
+				}
+				Parameter cost_Storage_service {
+					IndexDomain: a;
+					Text: "Instalation unitary fixed cost of each Storage in node (a)";
+					Definition: YearsToInstances*card(Instances)*sum[(q),UnitaryStorageCost(q)*NULHG(a,q)/StorageUsefulLife(q)];
+				}
+				Parameter NULHG {
+					IndexDomain: (a,q);
+					Text: "Number of Units of Hydrogen Gas Storage";
+					Definition: {
+						data { ( 'Gas Storage Node I', 'Gas caverns
+						' ) : 60,  ( 'Gas Storage Node I', 'Pressurized storage' ) : 30 }
+					}
+				}
+				Parameter MSCS {
+					IndexDomain: q;
+					Text: "Maximum Storage Capacity of each type of storage (q) in Kg";
+					Definition: {
+						data { 'Pressurized storage' : 8000,  'Gas caverns
+						' : 5000 }
+					}
+				}
+				Parameter MaxMSCS {
+					IndexDomain: (a,q);
+					Text: "Maximum Hydrogen Gas Storage Capacity of node (a) using storage of type (q)";
+					Definition: NULHG(a,q)*MSCS(q);
+				}
+				Parameter GranTotalMSMS {
+					IndexDomain: a;
+					Text: "Maximum Hydrogen Gas Storage Capacity of node (a)";
+					Definition: sum[(q), MaxMSCS(a,q)];
+				}
+				Parameter storageHGUnitaryCost {
+					IndexDomain: (a,q);
+					Text: "Cost in USD/years for each Stored Gas Hydrogen Kg in node (a)";
+					Definition: {
+						data { ( 'Gas Storage Node I', 'Pressurized storage' ) : 3,  ( 'Gas Storage Node I', 'Gas caverns
+						' ) : 5 }
+					}
+				}
+				Parameter Max_Cost_Storage_Service {
+					IndexDomain: (a,i);
+					Text: "Operative Cost for node (a) in instance (i)";
+					Definition: sum[(q), MSCS(q)*storageHGUnitaryCost(a,q)]/card(instances);
+				}
+				Parameter C_CSLHGS_District {
+					IndexDomain: (a,k,t,i);
+					Text: "Cost of Store Hydrogen Gas, using node (a), for the industrial district (k), in period (t)";
+					Definition: Max_Cost_Storage_Service(a,i) + sum[(q),UnitaryStorageCost(q)*NULHG(a,q)]/card(Instances);
+				}
+				Constraint Fill_theta_StoredHG {
+					IndexDomain: (t,i);
+					Definition: {
+						theta_StoredHG(t,i) =
+						sum[(o),gamma_IEE_Gas(o,t,i)]
+						-sum[(o,n),gamma_AHG_FuellCell(o,n,t,i)]
+					}
+				}
+				Constraint StoreHG_SendToDistrict {
+					IndexDomain: (k,t,i);
+					Definition: {
+						sum[(a),theta_AHGS_District(a,k,t,i)
+						
+						+theta_AHGS_District_plus(a,k,t,i)
+						-theta_AHGS_District_minus(a,k,t,i)]
+						
+						= D_District_HG(k,t,i)
+					}
+				}
+				Constraint MaxStorageLimit {
+					IndexDomain: (a,k,i);
+					Definition: {
+						sum[(t),theta_AHGS_District(a,k,t,i)]
+						<= GranTotalMSMS(a)*Y_Storage_District(a,k)
+					}
+				}
+			}
+		}
+		Section EquilibriumConstraints {
+			DeclarationSection General {
+				Variable fr_General_City_plus {
+					IndexDomain: (j,t,i);
+					Range: nonnegative;
+				}
+				Parameter Penalty_fr_General_City_plus {
+					Definition: 10000000;
+				}
+				Variable fr_General_City_minus {
+					IndexDomain: (j,t,i);
+					Range: nonnegative;
+				}
+				Parameter Penalty_fr_General_City_minus {
+					Definition: 5000;
+				}
+				Variable fr_General_District_plus {
+					IndexDomain: (k,t,i);
+					Range: nonnegative;
+				}
+				Parameter Penlaty_fr_General_District_plus {
+					Definition: 10000000;
+				}
+				Variable fr_General_District_minus {
+					IndexDomain: (k,t,i);
+					Range: nonnegative;
+				}
+				Parameter Penlaty_fr_General_District_minus {
+					Definition: 6000;
+				}
+				Variable fr_Solar_City {
+					IndexDomain: (l,j,t,i);
+					Range: nonnegative;
+				}
+				Variable fr_Solar_District {
+					IndexDomain: (l,k,t,i);
+					Range: nonnegative;
+				}
+				Variable fr_Eolical_City {
+					IndexDomain: (m,j,t,i);
+					Range: nonnegative;
+				}
+				Variable fr_Eolical_District {
+					IndexDomain: (m,k,t,i);
+					Range: nonnegative;
+				}
+				Variable fr_FuelCell_City {
+					IndexDomain: (n,j,t,i);
+					Range: nonnegative;
+				}
+				Variable fr_FuelCell_District {
+					IndexDomain: (n,k,t,i);
+					Range: nonnegative;
+				}
+				Constraint DemandFractionsCity {
+					IndexDomain: (j,t,i);
+					Definition: {
+						sum[(l),fr_Solar_City(l,j,t,i)]
+						+sum[(m),fr_Eolical_City(m,j,t,i)]
+						+sum[(n),fr_FuelCell_City(n,j,t,i)]
+						+fr_General_City_plus(j,t,i)
+						-fr_General_City_minus(j,t,i) = 1
+					}
+				}
+				Constraint DemandFractionsDistrict {
+					IndexDomain: (k,t,i);
+					Definition: {
+						sum[(l),fr_Solar_District(l,k,t,i)]
+						+sum[(m),fr_Eolical_District(m,k,t,i)]
+						+sum[(n),fr_FuelCell_District(n,k,t,i)]
+						+fr_General_District_plus(k,t,i)
+						-fr_General_District_minus(k,t,i)
+						= 1
+					}
+				}
+				Constraint DistrictSend {
+					IndexDomain: (k,t,i);
+					Definition: {
+						sum[(l),psi_ASE_District(l,k,t,i)]
+						+sum[(l,g,v),psi_SEP_District_plus(l,k,t,i,g,v)]
+						-sum[(l,g,v),psi_SEP_District_minus(l,k,t,i,g,v)]
+						
+						+sum[(m),lambda_AEE_District(m,k,t,i)]
+						+sum[(m,f,h),lambda_EEP_District_plus(m,k,t,i,f,h)]
+						-sum[(m,f,h),lambda_EEP_District_minus(m,k,t,i,f,h)]
+						
+						+sum[(n),delta_AEFC_District(n,k,t,i)]
+						+sum[(n),delta_AEFC_District_plus(n,k,t,i)]
+						-sum[(n),delta_AEFC_District_minus(n,k,t,i)] = D_District(k,t,i)
+					}
+				}
+				Constraint CitySend {
+					IndexDomain: (j,t,i);
+					Definition: {
+						sum[(l),psi_ASE_City(l,j,t,i)]
+						+sum[(l,g,v),psi_SEP_City_plus(l,j,t,i,g,v)]
+						-sum[(l,g,v),psi_SEP_City_minus(l,j,t,i,g,v)]
+						
+						+sum[(m),lambda_AEE_City(m,j,t,i)]
+						+sum[(m,f,h),lambda_EEP_City_plus(m,j,t,i,f,h)]
+						-sum[(m,f,h),lambda_EEP_City_minus(m,j,t,i,f,h)]
+						
+						+sum[(n),delta_AEFC_City(n,j,t,i)]
+						+sum[(n),delta_AEFC_City_plus(n,j,t,i)]
+						-sum[(n),delta_AEFC_City_minus(n,j,t,i)] = D_City(j,t,i)
+					}
+				}
+				Constraint GeneralSend {
+					Definition: {
+						(sum[(l,j,t,i),psi_ASE_City(l,j,t,i)]
+						+sum[(l,j,t,i,g,v),psi_SEP_City_plus(l,j,t,i,g,v)]
+						-sum[(l,j,t,i,g,v),psi_SEP_City_minus(l,j,t,i,g,v)]
+						
+						+sum[(m,j,t,i),lambda_AEE_City(m,j,t,i)]
+						+sum[(m,j,t,i,f,h),lambda_EEP_City_plus(m,j,t,i,f,h)]
+						-sum[(m,j,t,i,f,h),lambda_EEP_City_minus(m,j,t,i,f,h)]
+						
+						+sum[(n,j,t,i),delta_AEFC_City(n,j,t,i)]
+						+sum[(n,j,t,i),delta_AEFC_City_plus(n,j,t,i)]
+						-sum[(n,j,t,i),delta_AEFC_City_minus(n,j,t,i)])
+						
+						+
+						
+						(sum[(l,k,t,i),psi_ASE_District(l,k,t,i)]
+						+sum[(l,k,t,i,g,v),psi_SEP_District_plus(l,k,t,i,g,v)]
+						-sum[(l,k,t,i,g,v),psi_SEP_District_minus(l,k,t,i,g,v)]
+						
+						+sum[(m,k,t,i),lambda_AEE_District(m,k,t,i)]
+						+sum[(m,k,t,i,f,h),lambda_EEP_District_plus(m,k,t,i,f,h)]
+						-sum[(m,k,t,i,f,h),lambda_EEP_District_minus(m,k,t,i,f,h)]
+						
+						+sum[(n,k,t,i),delta_AEFC_District(n,k,t,i)]
+						+sum[(n,k,t,i),delta_AEFC_District_plus(n,k,t,i)]
+						-sum[(n,k,t,i),delta_AEFC_District_minus(n,k,t,i)]) = sum[(j,t,i),D_City(j,t,i)] + sum[(k,t,i),D_District(k,t,i)]
+					}
+				}
+				Constraint EnergyExcess {
+					Definition: {
+						sum[(o,t,i),gamma_IEE_Electricity(o,t,i)] <=
+						
+						(sum[(l),Gran_Total_Solar_Generation(l)]
+						+sum[(m),Gran_Total_Eolical_Generation(m)])
+						
+						-
+						
+						(sum[(l,t,i),psi_ASE(l,t,i)]
+						+sum[(m,t,i),lambda_AEE(m,t,i)])
+					}
+				}
+				Constraint MaxSendtoFuelCell {
+					Definition: sum[(o,n,t,i),gamma_AHG_FuellCell(o,n,t,i)] <= sum[(o,t,i),gamma_IEE_Gas(o,t,i)];
+				}
+			}
+		}
+		Section Sets_Command_Center {
+			DeclarationSection sets {
+				Set TTHG {
+					Text: "Types of Hydrogen Gas Storage";
+					Definition: {
+						data { 'Gas caverns
+						', 'Pressurized storage' }
+					}
+				}
+				Index q {
+					Range: TTHG;
+				}
+				Set TFC {
+					Text: "Types of Fuel Cells";
+					Definition: data { 'PEM: Proton exchange membrane', 'SOFC: Solid oxide fuel cell' };
+				}
+				Index z {
+					Range: TFC;
+					Text: "Set of Types of Fuel Cells";
+				}
+				Set Power_Units {
+					Definition: data { 'Dfault: Mw/instance', 'Kw to Mw', 'Mw to Kw', 'Kw to Gw', 'Gw to Kw', 'Mw to Gw', 'Gw to Mw'};
+				}
+				Index pu {
+					Range: Power_Units;
+				}
+				Set Cities {
+					Text: "Set of cities";
+				}
+				Index j {
+					Range: Cities;
+					Text: "index for cities";
+					dex::ColumnName: Location_Electricity;
+				}
+				Set indDistricts {
+					Text: "Set of industrial districts";
+				}
+				Index k {
+					Range: indDistricts;
+					Text: "index for districts";
+					dex::ColumnName: Location;
+				}
+				Set SEGN {
+					Text: "Set for Solar Energy Generation Nodes";
+					Definition: data { 'solar node I', 'solar node II' };
+				}
+				Index l {
+					Range: SEGN;
+					Text: "index for Solar Energy Generation Nodes";
+				}
+				Set EEGN {
+					Text: "Set of Eolical Energy Generation Node";
+					Definition: data { 'eolical node I', 'eolical node II' };
+				}
+				Index m {
+					Range: EEGN;
+					Text: "index of wind energy generation nodes";
+				}
+				Set EGNFC {
+					Text: "Set of Energy Generating Nodes with Fuel Cells";
+					Definition: data { 'Fuel Cell Node I', 'Fuel Cell Node II' };
+				}
+				Index n {
+					Range: EGNFC;
+					Text: "Index of Energy Generating Nodes with Fuel Cells";
+				}
+				Set HGGNE {
+					Text: "Set of Hydrogen Gas Generation Nodes with Electrolyzers";
+					Definition: data { 'Gas Generation Node I' };
+				}
+				Index o {
+					Range: HGGNE;
+					Text: "Index of Hydrogen Gas Generation Nodes with Electrolyzers";
+				}
+				Set LGSN {
+					Text: "Set of Liquefied Gas Storage Nodes";
+					Definition: data { 'Gas Storage Node I' };
+				}
+				Index a {
+					Range: LGSN;
+					Text: "Index of Liquefied Gas Storage Nodes";
+				}
+				Set WTA {
+					Text: "Set of Wind Turbines Available";
+					Definition: data { w1, w2, w3 };
+				}
+				Index p {
+					Range: WTA;
+					Text: "Index of Wind Turbines Available";
+				}
+				Set FCA {
+					Text: "Set of Fuell Cells Available";
+					Definition: data { fuelcell1, fuelcell2, fuelcell3 };
+				}
+				Index u {
+					Range: FCA;
+					Text: "Index of Fuell Cells Available";
+				}
+				Set RATSP {
+					Text: "Set of Relative Ambient Temperature Scales for Solar Panels";
+					Definition: data { 'high temperature', 'medium temperature', 'low temperature' };
+				}
+				Index v {
+					Range: RATSP;
+					Text: "Index of of Relative Ambient Temperature Scales for Solar Panels";
+				}
+				Set RHSWT {
+					Text: "Set of Relative Humidity Scale for Wind Turbines";
+					Definition: data { 'high humidity', 'medium humidity', 'low humidity' };
+				}
+				Index h {
+					Range: RHSWT;
+					Text: "Index of Relative Humidity Scale for Wind Turbines";
+				}
+				Set WVS {
+					Text: "Set of Wind Velocity Scales";
+					Definition: data { 'high wind velocity', 'medium wind velocity', 'low wind velocity' };
+				}
+				Index f {
+					Range: WVS;
+					Text: "Index of Wind Velocity Scales";
+				}
+				Set IS {
+					Text: "Set of Irradiance Scales";
+					Definition: data { 'high irradiance', 'medium irradiance', 'low irradiance' };
+				}
+				Index g {
+					Range: IS;
+					Text: "Index of Irradiance Scales";
+				}
+				Set WASES {
+					Text: "Set of Water Availability Scales for Electrolyzer Supply";
+					Definition: data { 'enough water', 'limited water', 'lacking water' };
+				}
+				Index s {
+					Range: WASES;
+					Text: "Index of Water Availability Scales for Electrolyzer Supply";
+				}
+				Set Quarters {
+					Text: "Set of Quarters of the year";
+				}
+				Index t {
+					Range: Quarters;
+					Text: "Index of Quarters of the year";
+					dex::ColumnName: Quarter;
+				}
+				Set Instances {
+					Text: "Number of Instances in a day, such that each instance lasts 15 minutes";
+				}
+				Index i {
+					Range: Instances;
+					Text: "Index of Number of Instances in a day, such that each instance lasts 15 minutes";
+					dex::ColumnName: Instance;
+				}
+				Set SPS {
+					Text: "Solar Panels Size";
+					Definition: data { 'large panel size', 'medium panel size', 'small panel size' };
+				}
+				Index b {
+					Range: SPS;
+					Text: "Index of Solar Panels Size";
+				}
+				Set WTS {
+					Text: "Wind Turbines Size Gondole plus Pala";
+					Definition: data { '36 m + 65 m', '31 m + 60 m', '29 m + 55 m', '26 m + 55 m', '23 m + 50 m', '15 m + 40 m ', '10 m + 30 m', '6.25 m + 20 m', '3.5 m + 15 m', '1.2 m + 5 m' };
+				}
+				Index w {
+					Range: WTS;
+					Text: "Index of Wind Turbines Size";
+				}
+				Set ET {
+					Text: "Electrolyzers Types";
+					Definition: data { Alkaline, 'Proton Exchange Membrane' };
+				}
+				Index r {
+					Range: ET;
+					Text: "Set of Electrolyzers Types";
+				}
+			}
+		}
+		DeclarationSection Results_Section {
+			Parameter ModelSolved {
+				Range: binary;
+				Default: 0;
+			}
+		}
+	}
+	Procedure MainInitialization {
+		Comment: "Add initialization statements here that do NOT require any library being initialized already.";
+	}
+	Procedure PostMainInitialization {
+		Body: {
+			! Apply Identifier Element Text translations
+			empty IdentifierElementText;
+			read IdentifierElementText from file IdentifierElementTextFile in merge mode;
+			webui::IdentifierElementText((IndexIdentifiers) | IdentifierElementText(IndexIdentifiers))   := IdentifierElementText(IndexIdentifiers);
+		}
+		Comment: {
+			"Add initialization statements here that require that the libraries are already initialized properly,
+			or add statements that require the Data Management module to be initialized."
+		}
+	}
+	Procedure MainExecution;
+	Procedure PreMainTermination {
+		Body: {
+			return DataManagementExit();
+		}
+		Comment: {
+			"Add termination statements here that require all libraries to be still alive.
+			Return 1 if you allow the termination sequence to continue.
+			Return 0 if you want to cancel the termination sequence."
+		}
+	}
+	Procedure MainTermination {
+		Body: {
+			return 1;
+		}
+		Comment: {
+			"Add termination statements here that do not require all libraries to be still alive.
+			Return 1 to allow the termination sequence to continue.
+			Return 0 if you want to cancel the termination sequence.
+			It is recommended to only use the procedure PreMainTermination to cancel the termination sequence and let this procedure always return 1."
+		}
+	}
+	Section Quantities_and_Units {
+		Comment: {
+			"This section contains all the units and quantities that are added automatically by AIMMS.
+			It is recommended to declare all your quantities here."
+		}
+		Quantity SI_Time_Duration {
+			BaseUnit: s;
+			Conversions: minute->s : #-># * 60;
+			Comment: {
+				"Expresses the value for the duration of periods.
+				
+				The unit s has been added automatically because it is a required unit for AimmsWebUI.
+				
+				The unit minute has been added automatically because it is a required unit for AimmsWebUI."
+			}
+		}
+	}
+}

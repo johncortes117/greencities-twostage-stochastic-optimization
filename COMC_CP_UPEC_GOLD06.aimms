@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<References AIMMS_Version="25.4.1.2 (x64)">
+	<MainProject Path="MainProject" />
+	<Library System="true" Path="AimmsPro" />
+	<RepositoryLibrary UUID="69378F70-E906-486F-8F2C-1D606AEB9669" Name="WebUI" Version="25.3.5.2" />
+	<RepositoryLibrary UUID="E26C298C-5EF6-42C5-B7B7-59ED3DF48D6F" Name="AimmsXLLibrary" Version="24.0.0.2" />
+	<RepositoryLibrary UUID="BDF54E1C-AF05-4D77-856C-F3C05F20FFB8" Name="AimmsDEX" Version="24.0.0.13" />
+</References>

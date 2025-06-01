@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<AimmsJSONMapping>
+	<ObjectMapping>
+		<ArrayMapping name="rows">
+			<ObjectMapping>
+				<ValueMapping name="Location_Electricity" binds-to="j" />
+				<ValueMapping name="Quarter" binds-to="t" />
+				<ValueMapping name="Instance" binds-to="i" />
+				<ValueMapping name="Load" maps-to="D_City(j,t,i)" />
+			</ObjectMapping>
+		</ArrayMapping>
+	</ObjectMapping>
+</AimmsJSONMapping>

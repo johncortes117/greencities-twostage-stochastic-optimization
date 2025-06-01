@@ -1,0 +1,2288 @@
+{
+  "version": "4.67.0",
+  "application": {
+    "aimms.widget.type": {
+      "literal": "application"
+    },
+    "browser.language": {
+      "aimms": {
+        "contents": [
+          "webui::ClientBrowserLanguage"
+        ]
+      }
+    },
+    "browser.name": {
+      "aimms": {
+        "contents": [
+          "webui::ClientBrowserName"
+        ]
+      }
+    },
+    "browser.timezone": {
+      "aimms": {
+        "contents": [
+          "webui::BrowserTimeZone"
+        ]
+      }
+    },
+    "browsername": {
+      "aimms": {
+        "contents": [
+          "webui::ClientBrowserName"
+        ]
+      }
+    },
+    "browsertimezone": {
+      "aimms": {
+        "contents": [
+          "webui::BrowserTimeZone"
+        ]
+      }
+    },
+    "ignoredst": {
+      "aimms": {
+        "contents": [
+          "webui::IgnoreDST"
+        ]
+      }
+    },
+    "pages": {
+      "literal": {
+        "name": "root",
+        "slug": "root",
+        "children": [
+          {
+            "name": "Main Project",
+            "slug": "main_project",
+            "children": [
+              {
+                "name": "Prototipe Analysis",
+                "type": "pagev2-grid",
+                "slug": "prototipe_analysis",
+                "children": []
+              },
+              {
+                "name": "HnH Analysis",
+                "type": "pagev2-grid",
+                "slug": "hnh_analysis",
+                "children": []
+              },
+              {
+                "name": "WnS Analysis",
+                "type": "pagev2-grid",
+                "slug": "wns",
+                "children": []
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "theme.classic": {
+      "literal": "NOT_ALLOWED"
+    },
+    "timezone": {
+      "aimms": {
+        "contents": [
+          "webui::DisplayTimeZone"
+        ]
+      }
+    },
+    "timezone.dst.readonly": {
+      "aimms": {
+        "contents": [
+          "webui::DefaultDSTSettingForDisplayTimeZone"
+        ]
+      }
+    },
+    "workflows.configuration": {
+      "literal": {
+        "identifier": "Workflow_MainSteps",
+        "slice": [
+          {
+            "index": "webui::indexWorkflowOrder",
+            "type": "free",
+            "value": "webui::indexWorkflowOrder"
+          },
+          {
+            "index": "webui::indexNoOfPages",
+            "type": "free",
+            "value": "webui::indexNoOfPages"
+          },
+          {
+            "index": "webui::indexWorkflowPageSpec",
+            "type": "free",
+            "value": "webui::indexWorkflowPageSpec"
+          }
+        ]
+      }
+    },
+    "workflows.information": {
+      "aimms": {
+        "contents": [
+          "Workflow_Main"
+        ],
+        "slices": [
+          {
+            "identifier": "Workflow_Main",
+            "slice": [
+              {
+                "index": "webui::indexWorkflowOrder",
+                "type": "free",
+                "value": "webui::indexWorkflowOrder"
+              },
+              {
+                "index": "webui::indexWorkflowSpec",
+                "type": "free",
+                "value": "webui::indexWorkflowSpec"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "layouts/custom_28761287-7ffb-4789-b1a5-351e771acbf4": {
+    "definition": {
+      "literal": {
+        "componentName": "Grid",
+        "props": {
+          "gridTemplateColumns": "0.75fr 1fr 1fr 2fr",
+          "gridTemplateRows": "0.5fr 4fr 4fr",
+          "gridTemplateAreas": "\"area-a area-a area-a area-a\" \"area-b area-b area-b area-b\" \"area-c area-d area-e area-e\""
+        },
+        "items": [
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-a",
+              "name": "Area A",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-b",
+              "name": "Area B",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-c",
+              "name": "Area C",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-d",
+              "name": "Area D",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-e",
+              "name": "Area E",
+              "gridAutoFlow": "column"
+            }
+          }
+        ]
+      }
+    },
+    "displayName": {
+      "literal": "Load Data Page"
+    }
+  },
+  "layouts/custom_9df822a6-0fa9-48f2-8e6b-bf49cf6f4f20": {
+    "definition": {
+      "literal": {
+        "componentName": "Grid",
+        "props": {
+          "gridTemplateColumns": "4fr 4fr 1fr ",
+          "gridTemplateRows": "1fr 1fr 1fr 1fr ",
+          "gridTemplateAreas": "\"area-a area-b area-c\" \"area-a area-b area-c\" \"area-d area-d area-d\" \"area-e area-e area-e\""
+        },
+        "items": [
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-a",
+              "name": "Area A",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-b",
+              "name": "Area B",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-c",
+              "name": "Area C",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-d",
+              "name": "Area D",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-e",
+              "name": "Area E",
+              "gridAutoFlow": "column"
+            }
+          }
+        ]
+      }
+    },
+    "displayName": {
+      "literal": "Control Panel Page"
+    }
+  },
+  "layouts/custom_a2161d65-b240-4ecf-8242-7eb8d11c0a0a": {
+    "definition": {
+      "literal": {
+        "componentName": "Grid",
+        "props": {
+          "gridTemplateColumns": "1fr 1fr 1fr 1fr",
+          "gridTemplateRows": "1fr 1fr 1fr",
+          "gridTemplateAreas": "\"area-a area-a area-a area-c\" \"area-b area-b area-b area-c\" \"area-d area-d area-d area-d\""
+        },
+        "items": [
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-a",
+              "name": "Area A",
+              "gridAutoFlow": "column"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-b",
+              "name": "Area B",
+              "gridAutoFlow": "row"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-c",
+              "name": "Area C",
+              "gridAutoFlow": "row"
+            }
+          },
+          {
+            "componentName": "WidgetArea",
+            "props": {
+              "gridArea": "area-d",
+              "name": "Area D",
+              "gridAutoFlow": "column"
+            }
+          }
+        ]
+      }
+    },
+    "displayName": {
+      "literal": "Layout8 Copy"
+    }
+  },
+  "pages/hnh_analysis": {
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    },
+    "bindings": {
+      "literal": [
+        {
+          "widgetUri": "QuarterSelect",
+          "gridArea": "area-c",
+          "dndId": "area-dQuarterSelect5"
+        },
+        {
+          "widgetUri": "Results",
+          "gridArea": "area-e",
+          "dndId": "area-eResults0"
+        },
+        {
+          "widgetUri": "CityOffer",
+          "gridArea": "area-b",
+          "dndId": "area-bCityOffer1"
+        },
+        {
+          "widgetUri": "IndustryOffer",
+          "gridArea": "area-b",
+          "dndId": "area-bIndustryOffer2"
+        },
+        {
+          "widgetUri": "Optimize",
+          "gridArea": "area-a",
+          "dndId": "area-aOptimize3"
+        },
+        {
+          "widgetUri": "ExcessEnergy",
+          "gridArea": "area-d",
+          "dndId": "area-dExcessEnergy4"
+        }
+      ]
+    },
+    "layoutId": {
+      "literal": "custom_28761287-7ffb-4789-b1a5-351e771acbf4"
+    },
+    "widgets": {
+      "literal": [
+        {
+          "uri": "Optimize",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "CityOffer",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "IndustryOffer",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "ExcessEnergy",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Results",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "QuarterSelect",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        }
+      ]
+    }
+  },
+  "pages/prototipe_analysis": {
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    },
+    "bindings": {
+      "literal": [
+        {
+          "widgetUri": "SolarNodeCount",
+          "gridArea": "area-d",
+          "dndId": "area-dSolarNodeCount0"
+        },
+        {
+          "widgetUri": "WindNodeCount",
+          "gridArea": "area-d",
+          "dndId": "area-dWindNodeCount1"
+        },
+        {
+          "widgetUri": "ElectrolizerNodeCount",
+          "gridArea": "area-d",
+          "dndId": "area-dElectrolizerNodeCount2"
+        },
+        {
+          "widgetUri": "FuelcellNodeCount",
+          "gridArea": "area-d",
+          "dndId": "area-dFuelcellNodeCount3"
+        },
+        {
+          "widgetUri": "StorageNodeCount",
+          "gridArea": "area-d",
+          "dndId": "area-dStorageNodeCount4"
+        },
+        {
+          "widgetUri": "CityNodeCount",
+          "gridArea": "area-d",
+          "dndId": "area-dCityNodeCount5"
+        },
+        {
+          "widgetUri": "SolarNodeAmount",
+          "gridArea": "area-e",
+          "dndId": "area-eSolarNodeAmount6"
+        },
+        {
+          "widgetUri": "WindNodeAmount",
+          "gridArea": "area-e",
+          "dndId": "area-eWindNodeAmount7"
+        },
+        {
+          "widgetUri": "ElectrolizerNodeAmount",
+          "gridArea": "area-e",
+          "dndId": "area-eElectrolizerNodeAmount8"
+        },
+        {
+          "widgetUri": "FuelcellNodeAmount",
+          "gridArea": "area-e",
+          "dndId": "area-eFuelcellNodeAmount9"
+        },
+        {
+          "widgetUri": "IndustryNodeCount",
+          "gridArea": "area-e",
+          "dndId": "area-eIndustryNodeCount10"
+        },
+        {
+          "widgetUri": "StorageNodeAmount",
+          "gridArea": "area-e",
+          "dndId": "area-eStorageNodeAmount11"
+        },
+        {
+          "widgetUri": "Elecrtricity load",
+          "gridArea": "area-a",
+          "dndId": "area-aElecrtricity load12"
+        },
+        {
+          "widgetUri": "gasLoad",
+          "gridArea": "area-b",
+          "dndId": "area-bgasLoad13"
+        },
+        {
+          "widgetUri": "Quarterselec",
+          "gridArea": "area-c",
+          "dndId": "Unassigned widgetsQuarterselec"
+        }
+      ]
+    },
+    "layoutId": {
+      "literal": "custom_9df822a6-0fa9-48f2-8e6b-bf49cf6f4f20"
+    },
+    "secondarypageactions": {
+      "aimms": {
+        "contents": [
+          "PageAction_Secondary"
+        ],
+        "slices": [
+          {
+            "identifier": "PageAction_Secondary",
+            "slice": [
+              {
+                "index": "webui::indexPageExtension",
+                "type": "free",
+                "value": "webui::indexPageExtension"
+              },
+              {
+                "index": "webui::indexPageActionSpec",
+                "type": "free",
+                "value": "webui::indexPageActionSpec"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "widgets": {
+      "literal": [
+        {
+          "uri": "SolarNodeCount",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "WindNodeCount",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "ElectrolizerNodeCount",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "FuelcellNodeCount",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "StorageNodeCount",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "SolarNodeAmount",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "WindNodeAmount",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "FuelcellNodeAmount",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "ElectrolizerNodeAmount",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "StorageNodeAmount",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "CityNodeCount",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "IndustryNodeCount",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Elecrtricity load",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "gasLoad",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Quarterselec",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        }
+      ]
+    }
+  },
+  "pages/wns": {
+    "aimms.widget.type": {
+      "literal": "pagev2-grid"
+    },
+    "bindings": {
+      "literal": [
+        {
+          "widgetUri": "Storage1",
+          "gridArea": "area-d",
+          "dndId": "area-dStorage10"
+        },
+        {
+          "widgetUri": "electricity123",
+          "gridArea": "area-d",
+          "dndId": "area-delectricity1231"
+        },
+        {
+          "widgetUri": "storage",
+          "gridArea": "area-d",
+          "dndId": "area-dstorage2"
+        },
+        {
+          "widgetUri": "GasProduction",
+          "gridArea": "area-d",
+          "dndId": "area-dGasProduction3"
+        },
+        {
+          "widgetUri": "green hidrogen production",
+          "gridArea": "area-a",
+          "dndId": "area-agreen hidrogen production4"
+        },
+        {
+          "widgetUri": "quarters",
+          "gridArea": "area-c",
+          "dndId": "area-cquarters5"
+        },
+        {
+          "widgetUri": "HGstored",
+          "gridArea": "area-b",
+          "dndId": "Unassigned widgetsHGstored"
+        }
+      ]
+    },
+    "layoutId": {
+      "literal": "custom_a2161d65-b240-4ecf-8242-7eb8d11c0a0a"
+    },
+    "widgets": {
+      "literal": [
+        {
+          "uri": "green hidrogen production",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "Storage1",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "electricity123",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "storage",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "GasProduction",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "quarters",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        },
+        {
+          "uri": "HGstored",
+          "layoutInfo": {
+            "width": "2",
+            "height": "1"
+          }
+        }
+      ]
+    }
+  },
+  "widgets/CityNodeCount": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "Cities"
+        ]
+      }
+    },
+    "name": {
+      "literal": "CityNodeCount"
+    },
+    "title": {
+      "literal": "City Nodes"
+    },
+    "views": {
+      "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0"
+      ]
+    },
+    "views.0.type": {
+      "literal": "view"
+    }
+  },
+  "widgets/CityOffer": {
+    "aimms.widget.type": {
+      "literal": "barchart"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "Fraction_Produced_City_Eolical",
+          "Fraction_Produced_City_FuelCell",
+          "Fraction_Produced_City_Solar"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "j"
+        ],
+        "grouped": [],
+        "stacked": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "name": {
+      "literal": "CityOffer"
+    },
+    "title": {
+      "literal": "% energy producton for city"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/Elecrtricity load": {
+    "aimms.widget.type": {
+      "literal": "linechart"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "D_City",
+          "D_District"
+        ],
+        "prefix": "aimms",
+        "slices": [
+          {
+            "identifier": "D_City",
+            "slice": [
+              {
+                "index": "j",
+                "type": "free",
+                "value": "j"
+              },
+              {
+                "index": "t",
+                "type": "subset",
+                "value": "t_filter"
+              },
+              {
+                "index": "i",
+                "type": "free",
+                "value": "i"
+              }
+            ]
+          },
+          {
+            "identifier": "D_District",
+            "slice": [
+              {
+                "index": "k",
+                "type": "free",
+                "value": "k"
+              },
+              {
+                "index": "t",
+                "type": "subset",
+                "value": "t_filter"
+              },
+              {
+                "index": "i",
+                "type": "free",
+                "value": "i"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "t_filter",
+          "i"
+        ],
+        "stacked": [],
+        "overlays": [
+          "j",
+          "k",
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "name": {
+      "literal": "Elecrtricity load"
+    },
+    "title": {
+      "literal": "Electricity load"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/electricity123": {
+    "aimms.widget.type": {
+      "literal": "barchart"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "delta_AEFC_City",
+          "delta_AEFC_District"
+        ],
+        "prefix": "aimms",
+        "slices": [
+          {
+            "identifier": "delta_AEFC_City",
+            "slice": [
+              {
+                "index": "n",
+                "type": "free",
+                "value": "n"
+              },
+              {
+                "index": "j",
+                "type": "free",
+                "value": "j"
+              },
+              {
+                "index": "t",
+                "type": "subset",
+                "value": "t_filter"
+              },
+              {
+                "index": "i",
+                "type": "free",
+                "value": "i"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "name": {
+      "literal": "electricity123"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/ElectrolizerNodeAmount": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "HGGNE"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "HGGNE_i"
+        ],
+        "colHeader": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {
+            "HGGNE_i": "Gas Generation Node I"
+          },
+          "width": 28.32
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "<IDENTIFIER-SET>",
+          "width": 22.06
+        }
+      ]
+    },
+    "name": {
+      "literal": "ElectrolizerNodeAmount"
+    },
+    "title": {
+      "literal": "Electrolizer Amount"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/ElectrolizerNodeCount": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "NEN"
+        ]
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {
+            "r": "Proton Exchange Membrane"
+          },
+          "width": 31.29
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "r": "Alkaline"
+          },
+          "width": 11.03
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "o",
+          "width": 27.18
+        }
+      ]
+    },
+    "name": {
+      "literal": "ElectrolizerNodeCount"
+    },
+    "title": {
+      "literal": "Gas Generation Nodes"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/ExcessEnergy": {
+    "aimms.widget.type": {
+      "literal": "scalar"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "Max_Supply_City_District",
+          "Supply_City",
+          "Total_Supply",
+          "Supply_District",
+          "Supply_FuelCell_City_District"
+        ]
+      }
+    },
+    "name": {
+      "literal": "ExcessEnergy"
+    },
+    "views": {
+      "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0",
+        "views.1"
+      ]
+    },
+    "views.0.type": {
+      "literal": "view"
+    },
+    "views.1.type": {
+      "literal": "template"
+    }
+  },
+  "widgets/FuelcellNodeAmount": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "EGNFC"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "EGNFC_i"
+        ],
+        "colHeader": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "rowHeader",
+          "colKey": "<IDENTIFIER-SET>",
+          "width": 24.65
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "EGNFC_i": "Fuel Cell Node I"
+          },
+          "width": 22.17
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "EGNFC_i": "Fuel Cell Node II"
+          },
+          "width": 22.65
+        }
+      ]
+    },
+    "name": {
+      "literal": "FuelcellNodeAmount"
+    },
+    "title": {
+      "literal": "Fuel cell Amount"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/FuelcellNodeCount": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "NFCN"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "<IDENTIFIER-SET>",
+          "z"
+        ],
+        "colHeader": [
+          "n"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {
+            "n": "Fuel Cell Node II",
+            "z": "PEM: Proton exchange membrane"
+          },
+          "width": 25.2
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "n": "Fuel Cell Node II",
+            "z": "SOFC: Solid oxide fuel cell"
+          },
+          "width": 5.46
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "n": "Fuel Cell Node I",
+            "z": "PEM: Proton exchange membrane"
+          },
+          "width": 36.63
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "n",
+          "width": 28.35
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "z": "PEM: Proton exchange membrane"
+          },
+          "width": 27.63
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "<IDENTIFIER-SET>",
+          "width": 12.58
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "z",
+          "width": 15.36
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "n": "Fuel Cell Node II"
+          },
+          "width": 33.47
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "n": "Fuel Cell Node I"
+          },
+          "width": 26.62
+        }
+      ]
+    },
+    "name": {
+      "literal": "FuelcellNodeCount"
+    },
+    "title": {
+      "literal": "FuelCellGenerationNodes"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/gasLoad": {
+    "aimms.widget.type": {
+      "literal": "linechart"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "D_District_HG"
+        ],
+        "prefix": "aimms",
+        "slices": [
+          {
+            "identifier": "D_District_HG",
+            "slice": [
+              {
+                "index": "k",
+                "type": "free",
+                "value": "k"
+              },
+              {
+                "index": "t",
+                "type": "subset",
+                "value": "t_filter"
+              },
+              {
+                "index": "i",
+                "type": "free",
+                "value": "i"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "t_filter",
+          "t",
+          "i"
+        ],
+        "stacked": [],
+        "overlays": [
+          "<IDENTIFIER-SET>",
+          "k"
+        ],
+        "aggregated": []
+      }
+    },
+    "name": {
+      "literal": "gasLoad"
+    },
+    "title": {
+      "literal": "Gas load"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/GasProduction": {
+    "aimms.widget.type": {
+      "literal": "scalar"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "Real_HG_Offer_District",
+          "Total_HG_Produced",
+          "Total_HG_Stored"
+        ]
+      }
+    },
+    "name": {
+      "literal": "GasProduction"
+    },
+    "title": {
+      "literal": "Gas Production"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/green hidrogen production": {
+    "aimms.widget.type": {
+      "literal": "linechart"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "gamma_IEE_Gas"
+        ],
+        "prefix": "aimms",
+        "slices": [
+          {
+            "identifier": "gamma_IEE_Gas",
+            "slice": [
+              {
+                "index": "o",
+                "type": "free",
+                "value": "o"
+              },
+              {
+                "index": "t",
+                "type": "subset",
+                "value": "t_filter"
+              },
+              {
+                "index": "i",
+                "type": "free",
+                "value": "i"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "t",
+          "i",
+          "t_filter"
+        ],
+        "stacked": [
+          "<IDENTIFIER-SET>",
+          "o"
+        ],
+        "overlays": [],
+        "aggregated": []
+      }
+    },
+    "name": {
+      "literal": "green hidrogen production"
+    },
+    "title": {
+      "literal": "Produced gas by instance"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/HGstored": {
+    "aimms.widget.type": {
+      "literal": "linechart"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "D_District_HG"
+        ],
+        "prefix": "aimms",
+        "slices": [
+          {
+            "identifier": "D_District_HG",
+            "slice": [
+              {
+                "index": "k",
+                "type": "free",
+                "value": "k"
+              },
+              {
+                "index": "t",
+                "type": "subset",
+                "value": "t_filter"
+              },
+              {
+                "index": "i",
+                "type": "free",
+                "value": "i"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "i",
+          "t_filter"
+        ],
+        "stacked": [
+          "k",
+          "<IDENTIFIER-SET>"
+        ],
+        "overlays": [
+          "t"
+        ],
+        "aggregated": []
+      }
+    },
+    "name": {
+      "literal": "HGstored"
+    },
+    "title": {
+      "literal": "Hidrogen gas demand by instance"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/IndustryNodeCount": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "indDistricts"
+        ]
+      }
+    },
+    "name": {
+      "literal": "IndustryNodeCount"
+    },
+    "title": {
+      "literal": "Industra District Nodes"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/IndustryOffer": {
+    "aimms.widget.type": {
+      "literal": "barchart"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "Fraction_Produced_District_Eolical",
+          "Fraction_Produced_District_FuelCell",
+          "Fraction_Produced_District_Solar"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "k"
+        ],
+        "grouped": [],
+        "stacked": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "name": {
+      "literal": "IndustryOffer"
+    },
+    "title": {
+      "literal": "% energy production for industry"
+    },
+    "views": {
+      "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0",
+        "views.1"
+      ]
+    },
+    "views.0.type": {
+      "literal": "template"
+    },
+    "views.1.type": {
+      "literal": "view"
+    }
+  },
+  "widgets/Optimize": {
+    "action": {
+      "literal": {
+        "type": "procedure",
+        "value": "Optimize"
+      }
+    },
+    "aimms.widget.type": {
+      "literal": "button"
+    },
+    "name": {
+      "literal": "Optimize"
+    },
+    "title": {
+      "literal": "Optimize"
+    }
+  },
+  "widgets/quarters": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "Quarter_Selection"
+        ]
+      }
+    },
+    "contents.displaydomain": {
+      "literal": {
+        "quarter_selection": "1"
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "t"
+        ],
+        "colHeader": [
+          "t_filter",
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "rowHeader",
+          "colKey": "t",
+          "width": 17.45
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "Quarter_Selection"
+          },
+          "width": 22.2
+        }
+      ]
+    },
+    "name": {
+      "literal": "quarters"
+    },
+    "title": {
+      "literal": "Select quarter"
+    },
+    "views": {
+      "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0"
+      ]
+    },
+    "views.0.type": {
+      "literal": "view"
+    }
+  },
+  "widgets/Quarterselec": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "Quarter_Selection"
+        ],
+        "prefix": "aimms",
+        "slices": []
+      }
+    },
+    "contents.displaydomain": {
+      "literal": {
+        "quarter_selection": "1"
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "t",
+          "t_filter"
+        ],
+        "colHeader": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "rowHeader",
+          "colKey": "t",
+          "width": 11.93
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "Quarter_Selection"
+          },
+          "width": 13.63
+        }
+      ]
+    },
+    "name": {
+      "literal": "Quarterselec"
+    },
+    "views": {
+      "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0"
+      ]
+    },
+    "views.0.type": {
+      "literal": "view"
+    }
+  },
+  "widgets/QuarterSelect": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "Quarter_Selection"
+        ]
+      }
+    },
+    "contents.displaydomain": {
+      "literal": {
+        "quarter_selection": "1"
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "t"
+        ],
+        "colHeader": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "name": {
+      "literal": "QuarterSelect"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/Results": {
+    "aimms.widget.type": {
+      "literal": "linechart"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "lambda_AEE_City",
+          "lambda_AEE_District",
+          "delta_AEFC_City",
+          "delta_AEFC_District",
+          "psi_ASE_City",
+          "psi_ASE_District"
+        ],
+        "prefix": "aimms",
+        "slices": [
+          {
+            "identifier": "delta_AEFC_City",
+            "slice": [
+              {
+                "index": "n",
+                "type": "free",
+                "value": "n"
+              },
+              {
+                "index": "j",
+                "type": "free",
+                "value": "j"
+              },
+              {
+                "index": "t",
+                "type": "subset",
+                "value": "t_filter"
+              },
+              {
+                "index": "i",
+                "type": "free",
+                "value": "i"
+              }
+            ]
+          },
+          {
+            "identifier": "delta_AEFC_District",
+            "slice": [
+              {
+                "index": "n",
+                "type": "free",
+                "value": "n"
+              },
+              {
+                "index": "k",
+                "type": "free",
+                "value": "k"
+              },
+              {
+                "index": "t",
+                "type": "subset",
+                "value": "t_filter"
+              },
+              {
+                "index": "i",
+                "type": "free",
+                "value": "i"
+              }
+            ]
+          },
+          {
+            "identifier": "lambda_AEE_City",
+            "slice": [
+              {
+                "index": "m",
+                "type": "free",
+                "value": "m"
+              },
+              {
+                "index": "j",
+                "type": "free",
+                "value": "j"
+              },
+              {
+                "index": "t",
+                "type": "subset",
+                "value": "t_filter"
+              },
+              {
+                "index": "i",
+                "type": "free",
+                "value": "i"
+              }
+            ]
+          },
+          {
+            "identifier": "lambda_AEE_District",
+            "slice": [
+              {
+                "index": "m",
+                "type": "free",
+                "value": "m"
+              },
+              {
+                "index": "k",
+                "type": "free",
+                "value": "k"
+              },
+              {
+                "index": "t",
+                "type": "subset",
+                "value": "t_filter"
+              },
+              {
+                "index": "i",
+                "type": "free",
+                "value": "i"
+              }
+            ]
+          },
+          {
+            "identifier": "psi_ASE_City",
+            "slice": [
+              {
+                "index": "l",
+                "type": "free",
+                "value": "l"
+              },
+              {
+                "index": "j",
+                "type": "free",
+                "value": "j"
+              },
+              {
+                "index": "t",
+                "type": "subset",
+                "value": "t_filter"
+              },
+              {
+                "index": "i",
+                "type": "free",
+                "value": "i"
+              }
+            ]
+          },
+          {
+            "identifier": "psi_ASE_District",
+            "slice": [
+              {
+                "index": "l",
+                "type": "free",
+                "value": "l"
+              },
+              {
+                "index": "k",
+                "type": "free",
+                "value": "k"
+              },
+              {
+                "index": "t",
+                "type": "subset",
+                "value": "t_filter"
+              },
+              {
+                "index": "i",
+                "type": "free",
+                "value": "i"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "t_filter",
+          "i"
+        ],
+        "stacked": [
+          "<IDENTIFIER-SET>",
+          "k",
+          "j"
+        ],
+        "overlays": [],
+        "aggregated": [
+          "n",
+          "l",
+          "m"
+        ]
+      }
+    },
+    "name": {
+      "literal": "Results"
+    },
+    "title": {
+      "literal": "Results"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/SolarNodeAmount": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "SEGN"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "SEGN_i"
+        ],
+        "colHeader": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {
+            "SEGN_i": "solar node I"
+          },
+          "width": 15.2
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "SEGN_i": "solar node II"
+          },
+          "width": 15.62
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "<IDENTIFIER-SET>",
+          "width": 19.1
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "SEGN_i": "solar node 1"
+          },
+          "width": 15.96
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "SEGN_i": "solar node 2"
+          },
+          "width": 17.33
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "SEGN_i",
+          "width": 24.24
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "SEGN"
+          },
+          "width": 17.7
+        }
+      ]
+    },
+    "name": {
+      "literal": "SolarNodeAmount"
+    },
+    "title": {
+      "literal": "Solar Panel Amount"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/SolarNodeCount": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "NSPN"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "<IDENTIFIER-SET>",
+          "l"
+        ],
+        "colHeader": [
+          "b"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {
+            "l": "solar node I",
+            "b": "large panel size"
+          },
+          "width": 17.06
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "b",
+          "width": 19.78
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "l": "solar node II"
+          },
+          "width": 28.45
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "l": "solar node I"
+          },
+          "width": 21.88
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "<IDENTIFIER-SET>",
+          "width": 12.73
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "b": "large panel size"
+          },
+          "width": 18.99
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "b": "small panel size"
+          },
+          "width": 19.59
+        }
+      ]
+    },
+    "name": {
+      "literal": "SolarNodeCount"
+    },
+    "title": {
+      "literal": "Solar Generation Nodes"
+    },
+    "views": {
+      "literal": {}
+    },
+    "views.__display_order__": {
+      "literal": [
+        "views.0",
+        "views.1"
+      ]
+    },
+    "views.0.type": {
+      "literal": "view"
+    },
+    "views.1.type": {
+      "literal": "template"
+    }
+  },
+  "widgets/storage": {
+    "aimms.widget.type": {
+      "literal": "barchart"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "theta_AHGS_District"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "<IDENTIFIER-SET>",
+          "t",
+          "k"
+        ],
+        "grouped": [],
+        "stacked": [
+          "a"
+        ],
+        "aggregated": [
+          "i"
+        ]
+      }
+    },
+    "name": {
+      "literal": "storage"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/Storage1": {
+    "aimms.widget.type": {
+      "literal": "barchart"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "theta_AHGS_District",
+          "gamma_AHG_FuellCell",
+          "gamma_AHG_Storage"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "header": [
+          "<IDENTIFIER-SET>",
+          "k"
+        ],
+        "grouped": [
+          "t"
+        ],
+        "stacked": [
+          "n"
+        ],
+        "aggregated": [
+          "j",
+          "o",
+          "a",
+          "i"
+        ]
+      }
+    },
+    "name": {
+      "literal": "Storage1"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/StorageNodeAmount": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "LGSN"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "LGSN_i"
+        ],
+        "colHeader": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {
+            "LGSN_i": "Gas Storage Node I"
+          },
+          "width": 24.67
+        },
+        {
+          "type": "rowHeader",
+          "width": 18.49
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "<IDENTIFIER-SET>",
+          "width": 19.72
+        }
+      ]
+    },
+    "name": {
+      "literal": "StorageNodeAmount"
+    },
+    "title": {
+      "literal": "Storage Amount"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/StorageNodeCount": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "NULHG"
+        ]
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "rowHeader",
+          "colKey": "a",
+          "width": 24.7
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "q": "Pressurized storage"
+          },
+          "width": 26.79
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "q": "Gas caverns\n"
+          },
+          "width": 20.92
+        }
+      ]
+    },
+    "name": {
+      "literal": "StorageNodeCount"
+    },
+    "title": {
+      "literal": "StorageNodes"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/WindNodeAmount": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "EEGN"
+        ]
+      }
+    },
+    "contents.partition": {
+      "literal": {
+        "rowHeader": [
+          "EEGN_i"
+        ],
+        "colHeader": [
+          "<IDENTIFIER-SET>"
+        ],
+        "aggregated": []
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "rowHeader",
+          "colKey": "<IDENTIFIER-SET>",
+          "width": 22.8
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "EEGN_i": "eolical node II"
+          },
+          "width": 30.42
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "EEGN_i": "eolical node I"
+          },
+          "width": 28.64
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "EEGN_i",
+          "width": 16.43
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "<IDENTIFIER-SET>": "EEGN"
+          },
+          "width": 16.66
+        }
+      ]
+    },
+    "name": {
+      "literal": "WindNodeAmount"
+    },
+    "title": {
+      "literal": "Wind Turbine Amount"
+    },
+    "views": {
+      "literal": {}
+    }
+  },
+  "widgets/WindNodeCount": {
+    "aimms.widget.type": {
+      "literal": "table"
+    },
+    "contents": {
+      "aimms": {
+        "contents": [
+          "NWTN"
+        ]
+      }
+    },
+    "custom.column.widths": {
+      "literal": [
+        {
+          "type": "colHeader",
+          "colKey": {
+            "w": "36 m + 65 m"
+          },
+          "width": 14.97
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "<IDENTIFIER-SET>",
+          "width": 11.81
+        },
+        {
+          "type": "rowHeader",
+          "colKey": "m",
+          "width": 14.34
+        },
+        {
+          "type": "colHeader",
+          "colKey": {
+            "w": "1.2 m + 5 m"
+          },
+          "width": 14.82
+        }
+      ]
+    },
+    "name": {
+      "literal": "WindNodeCount"
+    },
+    "title": {
+      "literal": "Wind Generation Nodes"
+    },
+    "views": {
+      "literal": {}
+    }
+  }
+}

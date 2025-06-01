@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<AimmsExcelMapping dense-children="1">
+	<ExcelSheetMapping name="Industry Load">
+		<RowMapping>
+			<ColumnMapping name="Location" binds-to="k" />
+			<ColumnMapping name="Quarter" binds-to="t" />
+			<ColumnMapping name="Instance" binds-to="i" />
+			<ColumnMapping name="G_Load" maps-to="D_District_HG(k,t,i)" />
+			<ColumnMapping name="E_Load" maps-to="D_District(k,t,i)" />
+		</RowMapping>
+	</ExcelSheetMapping>
+</AimmsExcelMapping>

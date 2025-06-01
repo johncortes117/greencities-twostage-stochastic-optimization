@@ -1,0 +1,21 @@
+﻿IdentifierElementText(IndexIdentifiers) := data {
+
+	'Wind_LocationCount'		: "Number of Locations",
+	'Solar_LocationCount'		: "Number of Locations",
+	'Electro_LocationCount'		: "Number of Locations",
+	'FuelCell_LocationCount'	: "Number of Locations",
+	'Electro_FixedCost'			: "Fixed Cost",
+	'FuelCell_FixedCost'		: "Fixed Cost",
+	'Solar_FixedCost'			: "Fixed Cost",
+	'Wind_FixedCost'			: "Fixed Cost",
+	'Electro_Storage_Cost'		: "Storage Cost",
+	'FuelCell_Storage_Cost'		: "Storage Cost",
+	'FCA'				: "Fuel Cells",
+	'WTA'				: "Wind Turbines",
+	'SPA'				: "Solar Panels",
+	'Quarter_Selection'			: "Quarter Selection",
+	'Wind_MaxNumber'			: "Max Turbines",
+	'Solar_MaxNumber'			: "Max Panels",
+	'Electro_StorageMax'		: "Max Storage",
+	'FuelCell_StorageMax'		: "Max Storage"
+}

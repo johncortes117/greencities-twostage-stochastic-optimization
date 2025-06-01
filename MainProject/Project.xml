@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<Project AimmsVersion="25.4.1.2 unicode x64" ProjectUUID="19C41E4C-DFB4-43EF-AACC-5F0B17331508">
+	<ModelFileName>MOPTA.ams</ModelFileName>
+	<AutoSaveAndBackup>
+		<DataBackup AtRegularInterval="true" EveryNMinutes="15" NumBackupsDatedToday="3" NumDaysBeforeToday="3" />
+	</AutoSaveAndBackup>
+</Project>

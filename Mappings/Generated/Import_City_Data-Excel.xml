@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<AimmsExcelMapping>
+	<ExcelSheetMapping name="City Load">
+		<RowMapping>
+			<ColumnMapping name="Location_Electricity" binds-to="j" />
+			<ColumnMapping name="Quarter" binds-to="t" />
+			<ColumnMapping name="Instance" binds-to="i" />
+			<ColumnMapping name="Load" maps-to="D_City(j,t,i)" />
+		</RowMapping>
+	</ExcelSheetMapping>
+</AimmsExcelMapping>
