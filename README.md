@@ -5,6 +5,31 @@
 This study proposes a two-stage stochastic model to optimize the integration of solar, wind, and green hydrogen production, specifically addressing uncertainty in renewable energy generation.
 
 ---
+## Key Results
+
+The simulations, conducted using AIMMS, validate the model's feasibility for Ecuador's Zone 1, demonstrating:
+
+*   **Technical and Economic Feasibility:** The proposed system is viable for real-world implementation.
+*   **Significant Emission Reduction:** Achieves a **72% reduction in emissions** compared to conventional fossil fuel-dependent systems.
+*   **Improved Grid Stability:** Integration of green hydrogen and fuel cells reduces shortfalls by 94%, positioning green hydrogen as a critical stabilizer for 100% renewable grids.
+
+## Detailed Simulation Results and Analysis
+
+This repository includes a comprehensive set of simulation results that complement the findings presented in the main research paper. These extended results provide a deeper insight into the model's performance, detailed energy balances, and the role of green hydrogen in different regions and scenarios.
+
+The results include:
+
+*   Comparison of electrical demand with solar, wind, and fuel cell generation across various locations and quarters.
+*   Detailed electricity generation contributions in cities and industrial districts, including auto-sufficiency rates.
+*   Quantification of green hydrogen production from renewable surpluses, its usage in fuel cells, and excess stored amounts.
+*   Connections between the simulation outputs and the key parameters and constraints within the AIMMS model.
+*   Underlying technical references for efficiencies and conversion factors used in the model.
+
+For a full breakdown of the simulation outputs, detailed tables, and their analysis, please refer to the dedicated results file:
+
+[View Extended Results](RESULTS)
+
+---
 
 ## Getting Started
 
