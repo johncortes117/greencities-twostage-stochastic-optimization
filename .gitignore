@@ -9,9 +9,5 @@ backup/
 # AIMMS Project User Settings (can be user-specific)
 MainProject/Settings/MPILayout.xml
 
-# Data files - consider if these are generated or very large
-# If data/*.data are essential raw inputs and not too large, remove the next line
-data/*.data
-
 # WebUI generated files (if any beyond webui.json and resources)
 # MainProject/WebUI/some_generated_file
