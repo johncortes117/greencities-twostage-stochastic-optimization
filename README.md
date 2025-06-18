@@ -79,7 +79,7 @@ To explore and run the optimization model, you will need **AIMMS (Advanced Inter
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/johncortes117/greencities-twostage-stochastic-optimization.git](https://github.com/johncortes117/greencities-twostage-stochastic-optimization.git)
+    git clone https://github.com/johncortes117/greencities-twostage-stochastic-optimization.git
     ```
 2.  **Navigate to the project directory:**
     ```bash
